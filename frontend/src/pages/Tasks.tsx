@@ -6,12 +6,8 @@ import { fetchTasks } from "@/entities/task/model/api";
 import { TaskList } from "@/widgets/task-list/ui/TaskList";
 import { HeaderFilters } from "@/widgets/header-filters/ui/HeaderFilters";
 import { TTask } from "@/entities/task/model/types";
-type TTask = {
-  id: number;
-  body: string;
-  priority: number;
-  completed: boolean;
-};
+
+
 function Tasks() {
   const [tasks, setTasks] = useState<TTask[]>([]);
   const [filter, setFilter] = useState<"todo" | "in-progress" | "done">(
@@ -44,16 +40,18 @@ function Tasks() {
 
   return (
     <Layout>
-      {/* tags header */}
-      <HeaderFilters value={filter} onChange={setFilter} />
-
-      <Link
+      {/* tags header + create */}
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <div className="shrink-0">
+          <HeaderFilters value={filter} onChange={setFilter} />
+        </div>
+        <Link
           to="/create"
-          className="bg-yellow-200 flex rounded-full h-fit my-auto p-2 
-        text-black ml-auto"
+          className="shrink-0 inline-flex items-center justify-center bg-yellow-200 rounded-full p-2 text-black"
         >
           <IoAdd className="text-xl" />
         </Link>
+      </div>
 
       {/* tasks */}
       <TaskList tasks={filteredTasks} onCheck={handleTaskCheck} />

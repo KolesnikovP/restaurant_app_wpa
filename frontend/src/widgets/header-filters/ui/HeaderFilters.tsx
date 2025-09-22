@@ -1,34 +1,34 @@
 type Props = {
-  value: "todo" | "in-progress" | "done";
-  onChange: (v: "todo" | "in-progress" | "done") => void;
+  value: "drinks" | "refils" | "guidelines";
+  onChange: (v: "drinks" | "refils" | "guidelines") => void;
 };
 
 export function HeaderFilters({ value, onChange }: Props) {
   return (
     <div className="flex gap-2 mb-4">
       <button
-        onClick={() => onChange("todo")}
+        onClick={() => onChange("drinks")}
         className={`p-2 px-3 flex rounded-full ${
-          value === "todo" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
+          value === "drinks" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
         }`}
       >
-        Todo
+        Drinks
       </button>
       <button
-        onClick={() => onChange("in-progress")}
+        onClick={() => onChange("refils")}
         className={`p-2 px-3 flex rounded-full ${
-          value === "in-progress" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
+          value === "refils" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
         }`}
       >
-        In Progress
+        Refils
       </button>
       <button
-        onClick={() => onChange("done")}
+        onClick={() => onChange("guidelines")}
         className={`p-2 px-3 flex rounded-full ${
-          value === "done" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
+          value === "guidelines" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
         }`}
       >
-        Done
+        Guidelines
       </button>
     </div>
   );
