@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
-import TaskItem from "../components/TaskItem";
-import { fetchTasks } from "../service";
+import Layout from "@/shared/ui/Layout";
+import { fetchTasks } from "@/entities/task/model/api";
+import { TaskList } from "@/widgets/task-list/ui/TaskList";
+import { HeaderFilters } from "@/widgets/header-filters/ui/HeaderFilters";
+import { TTask } from "@/entities/task/model/types";
 type TTask = {
   id: number;
   body: string;
@@ -43,56 +45,18 @@ function Tasks() {
   return (
     <Layout>
       {/* tags header */}
-      <div className="flex gap-2 mb-4">
-        <button
-          onClick={() => setFilter("todo")}
-          className={`p-2 px-3 flex rounded-full ${
-            filter === "todo" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-          }`}
-        >
-          Todo
-        </button>
-        <button
-          onClick={() => setFilter("in-progress")}
-          className={`p-2 px-3 flex rounded-full ${
-            filter === "in-progress"
-              ? "bg-green-200 text-black"
-              : "bg-gray-800 text-white"
-          }`}
-        >
-          In Progress
-        </button>
-        <button
-          onClick={() => setFilter("done")}
-          className={`p-2 px-3 flex rounded-full ${
-            filter === "done" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-          }`}
-        >
-          Done
-        </button>
+      <HeaderFilters value={filter} onChange={setFilter} />
 
-        <Link
+      <Link
           to="/create"
           className="bg-yellow-200 flex rounded-full h-fit my-auto p-2 
         text-black ml-auto"
         >
           <IoAdd className="text-xl" />
         </Link>
-      </div>
 
       {/* tasks */}
-      <div className="space-y-2">
-        {filteredTasks.map((task: TTask, index) => (
-          <TaskItem
-            id={task.id}
-            key={index + "task"}
-            body={task.body}
-            completed={task.completed}
-            priority={task.priority}
-            onCheck={(completed) => handleTaskCheck(task.id, completed)}
-          />
-        ))}
-      </div>
+      <TaskList tasks={filteredTasks} onCheck={handleTaskCheck} />
     </Layout>
   );
 }

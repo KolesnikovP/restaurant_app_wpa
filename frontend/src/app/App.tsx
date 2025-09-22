@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import Create from "./pages/Create";
-import Tasks from "./pages/Tasks";
-import Wellcome from "./pages/Wellcome";
+import Create from "@/pages/Create";
+import Tasks from "@/pages/Tasks";
+import Wellcome from "@/pages/Wellcome";
 
 function App() {
   return (
@@ -41,3 +41,4 @@ const Content = () => {
 };
 
 export default App;
+

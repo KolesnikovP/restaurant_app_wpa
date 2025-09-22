@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { MdComment } from "react-icons/md";
-import { editTask } from "../service";
+import { editTask } from "@/entities/task/model/api";
 
 type Props = {
   id: number;
@@ -12,7 +12,6 @@ type Props = {
 
 function TaskItem({ id, body, priority, completed, onCheck }: Props) {
   const syncCheck = async (taskCompleted: boolean) => {
-    console.log(id);
     try {
       await editTask(id, taskCompleted);
       onCheck(taskCompleted);
@@ -56,3 +55,4 @@ function TaskItem({ id, body, priority, completed, onCheck }: Props) {
 }
 
 export default TaskItem;
+

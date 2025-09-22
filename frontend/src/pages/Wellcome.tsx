@@ -1,7 +1,7 @@
 import { IoArrowForward } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import imageSrc from "../assets/wellcome.svg";
-import Layout from "../components/Layout";
+import Layout from "@/shared/ui/Layout";
 type Props = {};
 
 function Wellcome({}: Props) {

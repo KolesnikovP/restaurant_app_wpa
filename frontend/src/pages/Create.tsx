@@ -2,8 +2,8 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { IoArrowBack } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import Layout from "../components/Layout";
-import { createTask } from "../service";
+import Layout from "@/shared/ui/Layout";
+import { createTask } from "@/entities/task/model/api";
 
 function Create() {
   const [form, setForm] = useState({
