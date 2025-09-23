@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Create from "@/pages/Create";
 import Wellcome from "@/pages/Wellcome";
 import MenuItemsPage from "@/pages/MenuItemsPage";
+import { ROUTES } from "@/shared/consts/routeNames";
 
 function App() {
   return (
@@ -32,13 +33,12 @@ const Content = () => {
       }}
     >
       <Routes location={displayLocation}>
-        <Route path="/" element={<Wellcome />} />
-        <Route path="/create" element={<Create />} />
-        <Route path="/menu-items" element={<MenuItemsPage />} />
+        <Route path={ROUTES.root} element={<Wellcome />} />
+        <Route path={ROUTES.createMenuItem} element={<Create />} />
+        <Route path={ROUTES.menuItems} element={<MenuItemsPage />} />
       </Routes>
     </div>
   );
 };
 
 export default App;
-

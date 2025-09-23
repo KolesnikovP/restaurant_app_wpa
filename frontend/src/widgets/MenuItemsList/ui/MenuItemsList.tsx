@@ -1,5 +1,5 @@
-import TaskItem from "@/entities/task/ui/TaskItem";
-import { TTask } from "@/entities/task/model/types";
+import { MenuItem } from "@/entities/menuItem";
+import { TTask } from "@/entities/menuItem/model/types";
 
 type Props = {
   menuItems: TTask[];
@@ -10,7 +10,7 @@ export function MenuItemsList({ menuItems, onCheck }: Props) {
   return (
     <div className="space-y-2">
       {menuItems.map((menuItem, index) => (
-        <TaskItem
+        <MenuItem
           id={menuItem.id}
           key={index + "menuItem"}
           body={menuItem.body}

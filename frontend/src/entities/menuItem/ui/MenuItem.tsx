@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import { MdComment } from "react-icons/md";
-import { editTask } from "@/entities/task/model/api";
+import { editMenuItem } from "@/entities/menuItem/model/api";
 
 type Props = {
   id: number;
@@ -10,10 +10,10 @@ type Props = {
   onCheck: (value: boolean) => void;
 };
 
-function TaskItem({ id, body, priority, completed, onCheck }: Props) {
+export function MenuItem({ id, body, priority, completed, onCheck }: Props) {
   const syncCheck = async (taskCompleted: boolean) => {
     try {
-      await editTask(id, taskCompleted);
+      await editMenuItem(id, taskCompleted);
       onCheck(taskCompleted);
       toast.success("Saved the changes!");
     } catch (err) {
@@ -54,5 +54,4 @@ function TaskItem({ id, body, priority, completed, onCheck }: Props) {
   );
 }
 
-export default TaskItem;
 

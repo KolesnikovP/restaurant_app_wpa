@@ -1,11 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { IoArrowBack } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/shared/ui/Layout";
-import { createTask } from "@/entities/task/model/api";
-
+import { createMenuItem } from "@/entities/menuItem/model/api";
+import { ROUTES } from "@/shared/consts/routeNames";
 function Create() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     priority: 1,
     body: "",
@@ -18,9 +19,10 @@ function Create() {
     e.preventDefault();
     try {
       if (!form.body || !form.priority) return;
-      await createTask(form);
+      await createMenuItem(form);
       resetForm();
-      toast.success("Task Created");
+      toast.success("Menu item Created");
+      navigate(ROUTES.menuItems);
     } catch (err) {
       if (!navigator.onLine) {
         resetForm();
@@ -28,7 +30,7 @@ function Create() {
           "You're offline. We'll save the changes when you're online!"
         );
       }
-      toast.error("Error creating task");
+      toast.error("Error creating menu item");
     }
   };
 
@@ -40,9 +42,10 @@ function Create() {
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setForm((form) => ({
       ...form,
-      [e.target.name]: e.target.value,
+      [name]: name === "priority" ? Number(value) : value,
     }));
   };
 
@@ -50,7 +53,7 @@ function Create() {
     <Layout>
       <form onSubmit={handleForm} className="space-y-2">
         <div className="flex justify-start mb-20">
-          <Link to="/tasks" className="mt-4 w-full mr-auto flex gap-2">
+          <Link to={ROUTES.menuItems} className="mt-4 w-full mr-auto flex gap-2">
             <IoArrowBack className="my-auto text-xl" /> Back
           </Link>
         </div>

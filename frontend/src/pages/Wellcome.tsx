@@ -2,6 +2,7 @@ import { IoArrowForward } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import imageSrc from "../assets/wellcome.svg";
 import Layout from "@/shared/ui/Layout";
+import { ROUTES } from "@/shared/consts/routeNames";
 type Props = {};
 
 function Wellcome({}: Props) {
@@ -26,7 +27,7 @@ function Wellcome({}: Props) {
 
           <div className="mt-5">
             <Link
-              to="/tasks"
+              to={ROUTES.menuItems}
               className="w-fit flex gap-2 rounded-full bg-yellow-200 text-black"
             >
               <span className="my-auto inline-block pl-5 pr-3">

@@ -25,10 +25,10 @@ registerRoute(imageRoute);
 // cache api calls
 const fetchMenuITemsRoute = new Route(
   ({ request }) => {
-    return request.url === import.meta.env.VITE_API_BASE_URL + "/tasks";
+    return request.url === import.meta.env.VITE_API_BASE_URL + "/menu-items";
   },
   new NetworkFirst({
-    cacheName: "api/fetch-tasks",
+    cacheName: "api/fetch-menu-items",
   })
 );
 registerRoute(fetchMenuITemsRoute);
@@ -47,24 +47,24 @@ const bgSyncPlugin = new BackgroundSyncPlugin("backgroundSyncQueue", {
   maxRetentionTime: 24 * 60,
 });
 
-const taskSubmitRoute = new Route(
+const menuItemSubmitRoute = new Route(
   ({ request }) => {
-    return request.url === import.meta.env.VITE_API_BASE_URL + "/task/create";
+    return request.url === import.meta.env.VITE_API_BASE_URL + "/menu-item/create";
   },
   new NetworkOnly({
     plugins: [bgSyncPlugin],
   }),
   "POST"
 );
-registerRoute(taskSubmitRoute);
+registerRoute(menuItemSubmitRoute);
 
-const editTaskRoute = new Route(
+const editMenuItemRoute = new Route(
   ({ request }) => {
-    return request.url.includes(import.meta.env.VITE_API_BASE_URL + "/task");
+    return request.url.includes(import.meta.env.VITE_API_BASE_URL + "/menu-item");
   },
   new NetworkOnly({
     plugins: [bgSyncPlugin],
   }),
   "PATCH"
 );
-registerRoute(editTaskRoute);
+registerRoute(editMenuItemRoute);

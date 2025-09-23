@@ -14,9 +14,9 @@ datasource db {
 }
 
 
-model Task {
-  id Int    @id @default(autoincrement())
-  body String   
+model MenuItem {
+  id        Int     @id @default(autoincrement())
+  body      String
   completed Boolean
-  priority Int
+  priority  Int
 }
