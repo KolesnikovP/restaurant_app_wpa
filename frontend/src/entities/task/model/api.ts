@@ -1,7 +1,7 @@
 import { api } from "@/shared/api/axios";
 import { TTask } from "./types";
 
-export const fetchTasks = async (): Promise<TTask[]> => {
+export const fetchMenuItems = async (): Promise<TTask[]> => {
   const response = await api.get("/tasks");
   return response.data;
 };

@@ -2,26 +2,26 @@ import { useEffect, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import Layout from "@/shared/ui/Layout";
-import { fetchTasks } from "@/entities/task/model/api";
-import { TaskList } from "@/widgets/task-list/ui/TaskList";
+import { fetchMenuItems } from "@/entities/task/model/api";
 import { HeaderFilters } from "@/widgets/header-filters/ui/HeaderFilters";
 import { TTask } from "@/entities/task/model/types";
+import { MenuItemsList } from "@/widgets/MenuItemsList";
 
 
-function Tasks() {
-  const [tasks, setTasks] = useState<TTask[]>([]);
-  const [filter, setFilter] = useState<"todo" | "in-progress" | "done">(
-    "todo"
+function MenuItemsPage() {
+  const [menuItems, setMenuItems] = useState<TTask[]>([]);
+  const [filter, setFilter] = useState<"drinks" | "refils" | "guidelines">(
+    "drinks"
   );
 
   const getTasks = async () => {
-    const tasks = await fetchTasks();
-    setTasks(tasks);
+    const menuItems = await fetchMenuItems();
+    setMenuItems(menuItems);
   };
 
-  const handleTaskCheck = (taskId: number, completed: boolean) => {
-    setTasks((tasks) =>
-      tasks.map((task) => (task.id === taskId ? { ...task, completed } : task))
+  const handleTaskCheck = (menuItemId: number, completed: boolean) => {
+    setMenuItems((menuItems) =>
+      menuItems.map((menuItem) => (menuItem.id === menuItemId ? { ...menuItem, completed } : menuItem))
     );
     if (navigator.onLine) {
       getTasks();
@@ -32,8 +32,10 @@ function Tasks() {
     getTasks();
   }, []);
 
-  const filteredTasks = tasks.filter((t) => {
-    if (filter === "done") return t.completed;
+  const filteredTasks = menuItems.filter((t) => {
+    if (filter === "drinks") {
+      return t.completed;
+    }
     // both "todo" and "in-progress" map to not completed with current schema
     return !t.completed;
   });
@@ -53,10 +55,10 @@ function Tasks() {
         </Link>
       </div>
 
-      {/* tasks */}
-      <TaskList tasks={filteredTasks} onCheck={handleTaskCheck} />
+      {/* menuItems */}
+      <MenuItemsList menuItems={filteredTasks} onCheck={handleTaskCheck} />
     </Layout>
   );
 }
 
-export default Tasks;
+export default MenuItemsPage;

@@ -23,7 +23,7 @@ const imageRoute = new Route(
 registerRoute(imageRoute);
 
 // cache api calls
-const fetchTasksRoute = new Route(
+const fetchMenuITemsRoute = new Route(
   ({ request }) => {
     return request.url === import.meta.env.VITE_API_BASE_URL + "/tasks";
   },
@@ -31,7 +31,7 @@ const fetchTasksRoute = new Route(
     cacheName: "api/fetch-tasks",
   })
 );
-registerRoute(fetchTasksRoute);
+registerRoute(fetchMenuITemsRoute);
 
 // cache navigations
 const navigationRoute = new NavigationRoute(

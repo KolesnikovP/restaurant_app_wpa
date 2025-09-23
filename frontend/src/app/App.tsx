@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Create from "@/pages/Create";
-import Tasks from "@/pages/Tasks";
 import Wellcome from "@/pages/Wellcome";
+import MenuItemsPage from "@/pages/MenuItemsPage";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ const Content = () => {
       <Routes location={displayLocation}>
         <Route path="/" element={<Wellcome />} />
         <Route path="/create" element={<Create />} />
-        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/menu-items" element={<MenuItemsPage />} />
       </Routes>
     </div>
   );
