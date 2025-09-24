@@ -20,7 +20,11 @@ func main() {
     if err := appdb.Connect(dbPath); err != nil {
         log.Fatalf("db connect error: %v", err)
     }
-    appdb.AutoMigrate(&models.Task{})
+    // One-time table rename from tasks -> menu_items to preserve data
+    if err := appdb.DB.Exec("ALTER TABLE tasks RENAME TO menu_items;").Error; err != nil {
+        // ignore if table already renamed or doesn't exist
+    }
+    appdb.AutoMigrate(&models.MenuItem{})
 
     r := gin.Default()
 
@@ -30,9 +34,9 @@ func main() {
     cfg.AllowMethods = []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodOptions}
     r.Use(cors.New(cfg))
 
-    r.GET("/tasks", handlers.GetTasks)
-    r.POST("/task/create", handlers.CreateTask)
-    r.PATCH("/task/edit/:id", handlers.EditTask)
+    r.GET("/menu-items", handlers.GetMenuItems)
+    r.POST("/menu-item/create", handlers.CreateMenuItem)
+    r.PATCH("/menu-item/edit/:id", handlers.EditMenuItem)
 
     log.Printf("listening on :%s", port)
     if err := r.Run(":" + port); err != nil {
