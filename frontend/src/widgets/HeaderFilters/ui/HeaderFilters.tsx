@@ -1,6 +1,6 @@
 type Props = {
-  value: "menu" | "drinks" | "refils" | "guidelines";
-  onChange: (v: "menu" | "drinks" | "refils" | "guidelines") => void;
+  value: "menu" | "guidelines";
+  onChange: (v: "menu" | "guidelines") => void;
 };
 
 export function HeaderFilters({ value, onChange }: Props) {
@@ -15,6 +15,14 @@ export function HeaderFilters({ value, onChange }: Props) {
         Menu
       </button>
       <button
+        onClick={() => onChange("guidelines")}
+        className={`p-2 px-3 flex rounded-full ${
+          value === "guidelines" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
+        }`}
+      >
+        Guidelines
+      </button>
+{/*       <button
         onClick={() => onChange("drinks")}
         className={`p-2 px-3 flex rounded-full ${
           value === "drinks" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
@@ -30,14 +38,7 @@ export function HeaderFilters({ value, onChange }: Props) {
       >
         Refils
       </button>
-      <button
-        onClick={() => onChange("guidelines")}
-        className={`p-2 px-3 flex rounded-full ${
-          value === "guidelines" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-        }`}
-      >
-        Guidelines
-      </button>
+  */}
     </div>
   );
 }
