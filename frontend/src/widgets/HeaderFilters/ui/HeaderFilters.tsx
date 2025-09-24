@@ -3,9 +3,11 @@ import { Dispatch, SetStateAction } from "react";
 import { IoAdd, IoSearch } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
+export type THeaderFilters = "menu" | "recipes" |"guidelines"
+
 type Props = {
-  value: "menu" | "guidelines";
-  onChange: (v: "menu" | "guidelines") => void;
+  value: THeaderFilters;
+  onChange: (v: THeaderFilters) => void;
   inputQuery: string;
   onChangeInput: Dispatch<SetStateAction<string>>;
 }
@@ -22,6 +24,14 @@ export function HeaderFilters(props: Props) {
           }`}
         >
           Menu
+        </button>
+        <button
+          onClick={() => onChange("recipes")}
+          className={`p-2 px-3 flex rounded-full ${
+            value === "recipes" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
+          }`}
+        >
+          Recipes
         </button>
         <button
           onClick={() => onChange("guidelines")}

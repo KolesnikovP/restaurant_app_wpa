@@ -53,5 +53,3 @@ export function MenuItem({ id, body, priority, completed, onCheck }: Props) {
     </div>
   );
 }
-
-

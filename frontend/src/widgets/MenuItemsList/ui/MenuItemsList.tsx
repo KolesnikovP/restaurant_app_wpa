@@ -22,4 +22,3 @@ export function MenuItemsList({ menuItems, onCheck }: Props) {
     </div>
   );
 }
-

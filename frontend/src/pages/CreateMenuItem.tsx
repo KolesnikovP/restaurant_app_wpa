@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from "@/shared/ui/Layout";
 import { createMenuItem } from "@/entities/menuItem/model/api";
 import { ROUTES } from "@/shared/consts/routeNames";
-function Create() {
+
+function CreateMenuItem() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     priority: 1,
@@ -92,4 +93,4 @@ function Create() {
   );
 }
 
-export default Create;
+export default CreateMenuItem;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import Create from "@/pages/Create";
+import CreateMenuItem from "@/pages/CreateMenuItem";
 import Wellcome from "@/pages/Wellcome";
 import MenuItemsPage from "@/pages/MenuItemsPage";
 import { ROUTES } from "@/shared/consts/routeNames";
@@ -34,7 +34,7 @@ const Content = () => {
     >
       <Routes location={displayLocation}>
         <Route path={ROUTES.root} element={<Wellcome />} />
-        <Route path={ROUTES.createMenuItem} element={<Create />} />
+        <Route path={ROUTES.createMenuItem} element={<CreateMenuItem />} />
         <Route path={ROUTES.menuItems} element={<MenuItemsPage />} />
       </Routes>
     </div>

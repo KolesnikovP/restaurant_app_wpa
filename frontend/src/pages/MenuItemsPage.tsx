@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import Layout from "@/shared/ui/Layout";
 import { fetchMenuItems } from "@/entities/menuItem/model/api";
-import {HeaderFilters} from "@/widgets/HeaderFilters/ui/HeaderFilters";
 import { TTask } from "@/entities/menuItem/model/types";
 import { MenuItemsList } from "@/widgets/MenuItemsList";
+import { HeaderFilters, THeaderFilters } from "@/widgets/HeaderFilters";
 
 
 function MenuItemsPage() {
   const [menuItems, setMenuItems] = useState<TTask[]>([]);
-  const [filter, setFilter] = useState<"menu" | "guidelines">(
+  const [filter, setFilter] = useState<THeaderFilters>(
     "menu"
   );
   const [inputQuery, setInputQeury] = useState("");
