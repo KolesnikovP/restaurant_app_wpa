@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { IoAdd, IoSearch } from "react-icons/io5";
-import { Link } from "react-router-dom";
 import Layout from "@/shared/ui/Layout";
 import { fetchMenuItems } from "@/entities/menuItem/model/api";
-import { HeaderFilters } from "@/widgets/HeaderFilters/ui/HeaderFilters";
+import {HeaderFilters} from "@/widgets/HeaderFilters/ui/HeaderFilters";
 import { TTask } from "@/entities/menuItem/model/types";
 import { MenuItemsList } from "@/widgets/MenuItemsList";
-import { ROUTES } from "@/shared/consts/routeNames";
 
 
 function MenuItemsPage() {
@@ -14,7 +11,7 @@ function MenuItemsPage() {
   const [filter, setFilter] = useState<"menu" | "guidelines">(
     "menu"
   );
-  const [query, setQuery] = useState("");
+  const [inputQuery, setInputQeury] = useState("");
 
   const getMenuItems = async () => {
     const menuItems = await fetchMenuItems();
@@ -39,9 +36,9 @@ function MenuItemsPage() {
     /* const byCategory =
       filter === "menu" ? t.completed === true :
       filter === "guidelines" ? t.completed === false : true; */
-    const byQuery = query.trim().length === 0
+    const byQuery = inputQuery.trim().length === 0
       ? true
-      : (t.body ?? "").toLowerCase().includes(query.toLowerCase());
+      : (t.body ?? "").toLowerCase().includes(inputQuery.toLowerCase());
     // return byCategory && byQuery;
     return byQuery;
   });
@@ -50,16 +47,14 @@ function MenuItemsPage() {
     <Layout>
       {/* tags header + create */}
       <div className="flex items-center justify-between gap-2 mb-4">
-        <div className="shrink-0">
-          <HeaderFilters value={filter} onChange={setFilter} />
-        </div>
-        <div className="flex items-center gap-2 shrink-0 w-full justify-end">
+          <HeaderFilters  inputQuery={inputQuery} onChangeInput={setInputQeury} value={filter} onChange={setFilter} />
+        {/* <div className="flex items-center gap-2 shrink-0 w-full justify-end">
           <div className="flex items-center gap-2 bg-gray-800 text-white rounded-full px-3 py-2 w-full max-w-xs">
             <IoSearch className="text-lg shrink-0 opacity-80" />
             <input
               type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              value={inputQuery}
+              onChange={(e) => setInputQeury(e.target.value)}
               placeholder="Search..."
               className="bg-transparent focus:outline-none text-sm w-full placeholder:text-gray-400"
             />
@@ -70,7 +65,7 @@ function MenuItemsPage() {
           >
             <IoAdd className="text-xl" />
           </Link>
-        </div>
+        </div> */}
       </div>
 
       {/* menuItems */}
