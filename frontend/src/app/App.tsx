@@ -4,12 +4,19 @@ import CreateMenuItem from "@/pages/CreateMenuItem";
 import Wellcome from "@/pages/Wellcome";
 import MenuItemsPage from "@/pages/MenuItemsPage";
 import { ROUTES } from "@/shared/consts/routeNames";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function App() {
+  const queryClient = new QueryClient();
   return (
-    <BrowserRouter>
-      <Content />
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools/>
+      <BrowserRouter>
+        <Content />
+      </BrowserRouter>
+    </QueryClientProvider>
+
   );
 }
 

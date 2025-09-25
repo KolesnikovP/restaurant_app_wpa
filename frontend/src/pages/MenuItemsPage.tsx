@@ -4,7 +4,7 @@ import { fetchMenuItems } from "@/entities/menuItem/model/api";
 import { TTask } from "@/entities/menuItem/model/types";
 import { MenuItemsList } from "@/widgets/MenuItemsList";
 import { HeaderFilters, THeaderFilters } from "@/widgets/HeaderFilters";
-
+import { useGetRecipes } from "@/features/recipes/api/useGetRecipes";
 
 function MenuItemsPage() {
   const [menuItems, setMenuItems] = useState<TTask[]>([]);
@@ -12,6 +12,9 @@ function MenuItemsPage() {
     "menu"
   );
   const [inputQuery, setInputQeury] = useState("");
+
+  const {isPending, data, error} = useGetRecipes();
+  console.log(isPending, data, error)
 
   const getMenuItems = async () => {
     const menuItems = await fetchMenuItems();
