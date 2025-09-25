@@ -1,11 +1,13 @@
-.PHONY: run build tidy
+DB_PATH ?= app.db
+
+.PHONY: seed run clean-db
+
+seed:
+	DB_PATH=$(DB_PATH) go run ./cmd/seed
 
 run:
-	PORT=8000 DB_PATH=app.db ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5175 go run ./cmd/server
+	DB_PATH=$(DB_PATH) go run ./cmd/server
 
-build:
-	GOOS=linux GOARCH=amd64 go build -o bin/server ./cmd/server
-
-tidy:
-	go mod tidy
+clean-db:
+	rm -f $(DB_PATH)
 
