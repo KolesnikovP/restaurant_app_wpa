@@ -1,7 +1,10 @@
 import { ROUTES } from "@/shared/consts/routeNames";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { IoAdd, IoSearch } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import { fetchRecipes } from "@/features/recipes/api/useGetRecipes";
+import { fetchMenuItems } from "@/entities/menuItem/model/api";
 
 export type THeaderFilters = "menu" | "recipes" |"guidelines"
 
@@ -14,10 +17,32 @@ type Props = {
 
 export function HeaderFilters(props: Props) {
   const { value, onChange, inputQuery, onChangeInput } = props;
+  const queryClient = useQueryClient();
+
+  const { saveData, canHover } = useMemo(() => {
+    const sd = (navigator as any)?.connection?.saveData;
+    const ch = typeof window !== 'undefined' && window.matchMedia?.('(hover: hover)')?.matches;
+    return { saveData: !!sd, canHover: !!ch };
+  }, []);
+
+  const prefetchMenu = (allowOnTouch = false) => {
+    if (saveData) return;
+    if (!allowOnTouch && !canHover) return;
+    queryClient.prefetchQuery({ queryKey: ['menuItems'], queryFn: fetchMenuItems, staleTime: 30_000 });
+  };
+  const prefetchRecipes = (allowOnTouch = false) => {
+    if (saveData) return;
+    if (!allowOnTouch && !canHover) return;
+    queryClient.prefetchQuery({ queryKey: ['recipesData'], queryFn: fetchRecipes, staleTime: 30_000 });
+  };
   return (
     <div className="flex items-center justify-between gap-3 mb-4 w-full">
       <div className="flex items-center gap-2">
         <button
+          onPointerEnter={() => prefetchMenu(false)}
+          onFocus={() => prefetchMenu(false)}
+          onTouchStart={() => prefetchMenu(true)}
+          onPointerDown={() => prefetchMenu(true)}
           onClick={() => onChange("menu")}
           className={`p-2 px-3 flex rounded-full ${
             value === "menu" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
@@ -26,6 +51,10 @@ export function HeaderFilters(props: Props) {
           Menu
         </button>
         <button
+          onPointerEnter={() => prefetchRecipes(false)}
+          onFocus={() => prefetchRecipes(false)}
+          onTouchStart={() => prefetchRecipes(true)}
+          onPointerDown={() => prefetchRecipes(true)}
           onClick={() => onChange("recipes")}
           className={`p-2 px-3 flex rounded-full ${
             value === "recipes" ? "bg-green-200 text-black" : "bg-gray-800 text-white"

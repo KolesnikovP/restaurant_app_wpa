@@ -1,40 +1,42 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "@/shared/ui/Layout";
 import { fetchMenuItems } from "@/entities/menuItem/model/api";
 import { TTask } from "@/entities/menuItem/model/types";
 import { MenuItemsList } from "@/widgets/MenuItemsList";
 import { HeaderFilters, THeaderFilters } from "@/widgets/HeaderFilters";
-import { useGetRecipes } from "@/features/recipes/api/useGetRecipes";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { RecipesList } from "@/features/recipes/ui/RecipesList";
 
 function MenuItemsPage() {
-  const [menuItems, setMenuItems] = useState<TTask[]>([]);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<THeaderFilters>(
     "menu"
   );
   const [inputQuery, setInputQeury] = useState("");
+  
+  // Conditional queries per header filter
+  const {
+    data: menuItemsData = [],
+  } = useQuery<TTask[]>({
+    queryKey: ["menuItems"],
+    queryFn: fetchMenuItems,
+    enabled: filter === "menu",
+    staleTime: 30_000,
+  });
 
-  const {isPending, data, error} = useGetRecipes();
-  console.log(isPending, data, error)
-
-  const getMenuItems = async () => {
-    const menuItems = await fetchMenuItems();
-    setMenuItems(menuItems);
-  };
+  const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
 
   const handleMenuItemCheck = (menuItemId: number, completed: boolean) => {
-    setMenuItems((menuItems) =>
-      menuItems.map((menuItem) => (menuItem.id === menuItemId ? { ...menuItem, completed } : menuItem))
+    // optimistic update in cache
+    queryClient.setQueryData<TTask[] | undefined>(["menuItems"], (prev) =>
+      (prev ?? []).map((mi) => (mi.id === menuItemId ? { ...mi, completed } : mi))
     );
     if (navigator.onLine) {
-      getMenuItems();
+      queryClient.invalidateQueries({ queryKey: ["menuItems"] });
     }
   };
 
-  useEffect(() => {
-    getMenuItems();
-  }, []);
-
-  const filteredMenuItems = menuItems.filter((t) => {
+  const filteredMenuItems = menuItemsData.filter((t) => {
     // placeholder category filters kept as-is; adapt to real fields later
     /* const byCategory =
       filter === "menu" ? t.completed === true :
@@ -71,8 +73,18 @@ function MenuItemsPage() {
         </div> */}
       </div>
 
-      {/* menuItems */}
-      <MenuItemsList menuItems={filteredMenuItems} onCheck={handleMenuItemCheck} />
+      {/* Lists */}
+      {filter === "menu" && (
+        <MenuItemsList menuItems={filteredMenuItems} onCheck={handleMenuItemCheck} />
+      )}
+      {filter === "recipes" && (
+        <div className="grid gap-4">
+          <RecipesList selectedId={selectedRecipeId} onSelectId={setSelectedRecipeId} query={inputQuery} />
+        </div>
+      )}
+      {filter === "guidelines" && (
+        <div className="text-sm opacity-75">Guidelines: no data source yet.</div>
+      )}
     </Layout>
   );
 }
