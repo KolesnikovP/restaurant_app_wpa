@@ -41,7 +41,7 @@ export function RecipesList({ selectedId, onSelectId, query = "" }: Props) {
               ) : (
                 <div className="flex items-start justify-between gap-3">
                   <p className={`text-sm opacity-80 ${isOpen ? '' : 'line-clamp-2'}`}>{r.description}</p>
-                  <span className="text-xs opacity-70 shrink-0 select-none">{isOpen ? 'Hide' : 'Show'}</span>
+                  {/* <span className="text-xs opacity-70 shrink-0 select-none">{isOpen ? 'Hide' : 'Show'}</span> */}
                 </div>
               )}
             </Card>

@@ -11,4 +11,3 @@ function Layout({ children }: Props) {
 }
 
 export default Layout;
-
