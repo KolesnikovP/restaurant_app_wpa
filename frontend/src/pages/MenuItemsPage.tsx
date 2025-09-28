@@ -2,25 +2,23 @@ import { useState } from "react";
 import Layout from "@/shared/ui/Layout";
 import { fetchMenuItems } from "@/entities/menuItem/model/api";
 import { TTask } from "@/entities/menuItem/model/types";
-import { MenuItemsList } from "@/widgets/MenuItemsList";
+// import { MenuItemsList } from "@/widgets/MenuItemsList";
 import { HeaderFilters, THeaderFilters } from "@/widgets/HeaderFilters";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RecipesList } from "@/features/recipes/ui/RecipesList";
+import { MenuList } from "@/features/menuItems/ui/MenuList";
 
 function MenuItemsPage() {
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState<THeaderFilters>(
-    "menu"
-  );
+  const [filter, setFilter] = useState<THeaderFilters>("menu");
   const [inputQuery, setInputQeury] = useState("");
   
   // Conditional queries per header filter
-  const {
-    data: menuItemsData = [],
-  } = useQuery<TTask[]>({
+  // Legacy MenuItems kept for now, but Bar now uses its own list
+  const { data: menuItemsData = [] } = useQuery<TTask[]>({
     queryKey: ["menuItems"],
     queryFn: fetchMenuItems,
-    enabled: filter === "menu",
+    enabled: false,
     staleTime: 30_000,
   });
 
@@ -39,7 +37,7 @@ function MenuItemsPage() {
   const filteredMenuItems = menuItemsData.filter((t) => {
     // placeholder category filters kept as-is; adapt to real fields later
     /* const byCategory =
-      filter === "menu" ? t.completed === true :
+      filter === "bar" ? t.completed === true :
       filter === "guidelines" ? t.completed === false : true; */
     const byQuery = inputQuery.trim().length === 0
       ? true
@@ -75,13 +73,16 @@ function MenuItemsPage() {
 
       {/* Lists */}
       {filter === "menu" && (
-        <MenuItemsList menuItems={filteredMenuItems} onCheck={handleMenuItemCheck} />
+        <div className="grid gap-4">
+          <MenuList selectedId={selectedRecipeId} onSelectId={setSelectedRecipeId} query={inputQuery} />
+        </div>
       )}
       {filter === "recipes" && (
         <div className="grid gap-4">
           <RecipesList selectedId={selectedRecipeId} onSelectId={setSelectedRecipeId} query={inputQuery} />
         </div>
       )}
+      {/* Kitchen merged into Menu */}
       {filter === "guidelines" && (
         <div className="text-sm opacity-75">Guidelines: no data source yet.</div>
       )}

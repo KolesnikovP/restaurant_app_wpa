@@ -4,10 +4,11 @@ import { IoAdd, IoSearch } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchRecipes } from "@/features/recipes/api/useGetRecipes";
-import { fetchMenuItems } from "@/entities/menuItem/model/api";
+import { fetchMenuItems } from "@/features/menuItems/api/useGetMenuItems";
+// import { fetchMenuItems } from "@/entities/menuItem/model/api";
 import Portal from "@/shared/ui/Portal";
 
-export type THeaderFilters = "menu" | "recipes" |"guidelines"
+export type THeaderFilters = "menu" | "recipes" | "guidelines"
 
 type Props = {
   value: THeaderFilters;
@@ -29,6 +30,7 @@ export function HeaderFilters(props: Props) {
   const prefetchMenu = (allowOnTouch = false) => {
     if (saveData) return;
     if (!allowOnTouch && !canHover) return;
+    // Prefetch Menu items data (Menu tab consumes menu-items backend)
     queryClient.prefetchQuery({ queryKey: ['menuItems'], queryFn: fetchMenuItems, staleTime: 30_000 });
   };
   const prefetchRecipes = (allowOnTouch = false) => {
