@@ -1,6 +1,8 @@
 export const ROUTES = {
   root: "/",
   menuItems: "/menu-items",
+  recipes: "/recipes",
+  guidelines: "/guidelines",
   createMenuItem: "/create-menu-item",
 } as const;
 

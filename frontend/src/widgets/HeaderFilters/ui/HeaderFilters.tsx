@@ -1,24 +1,19 @@
 import { ROUTES } from "@/shared/consts/routeNames";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { IoAdd, IoSearch } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchRecipes } from "@/features/recipes/api/useGetRecipes";
 import { fetchMenuItems } from "@/features/menuItems/api/useGetMenuItems";
-// import { fetchMenuItems } from "@/entities/menuItem/model/api";
 import Portal from "@/shared/ui/Portal";
 
-export type THeaderFilters = "menu" | "recipes" | "guidelines"
-
 type Props = {
-  value: THeaderFilters;
-  onChange: (v: THeaderFilters) => void;
   inputQuery: string;
   onChangeInput: Dispatch<SetStateAction<string>>;
 }
 
 export function HeaderFilters(props: Props) {
-  const { value, onChange, inputQuery, onChangeInput } = props;
+  const { inputQuery, onChangeInput } = props;
   const queryClient = useQueryClient();
 
   const { saveData, canHover } = useMemo(() => {
@@ -41,38 +36,38 @@ export function HeaderFilters(props: Props) {
   return (
     <div className="flex items-center justify-between gap-3 mb-4 w-full">
       <div className="flex items-center gap-2">
-        <button
+        <NavLink
+          to={ROUTES.menuItems}
           onPointerEnter={() => prefetchMenu(false)}
           onFocus={() => prefetchMenu(false)}
           onTouchStart={() => prefetchMenu(true)}
           onPointerDown={() => prefetchMenu(true)}
-          onClick={() => onChange("menu")}
-          className={`p-2 px-3 flex rounded-full ${
-            value === "menu" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-          }`}
+          className={({ isActive }) =>
+            `p-2 px-3 flex rounded-full ${isActive ? "bg-green-200 text-black" : "bg-gray-800 text-white"}`
+          }
         >
           Menu
-        </button>
-        <button
+        </NavLink>
+        <NavLink
+          to={ROUTES.recipes}
           onPointerEnter={() => prefetchRecipes(false)}
           onFocus={() => prefetchRecipes(false)}
           onTouchStart={() => prefetchRecipes(true)}
           onPointerDown={() => prefetchRecipes(true)}
-          onClick={() => onChange("recipes")}
-          className={`p-2 px-3 flex rounded-full ${
-            value === "recipes" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-          }`}
+          className={({ isActive }) =>
+            `p-2 px-3 flex rounded-full ${isActive ? "bg-green-200 text-black" : "bg-gray-800 text-white"}`
+          }
         >
           Recipes
-        </button>
-        <button
-          onClick={() => onChange("guidelines")}
-          className={`p-2 px-3 flex rounded-full ${
-            value === "guidelines" ? "bg-green-200 text-black" : "bg-gray-800 text-white"
-          }`}
+        </NavLink>
+        <NavLink
+          to={ROUTES.guidelines}
+          className={({ isActive }) =>
+            `p-2 px-3 flex rounded-full ${isActive ? "bg-green-200 text-black" : "bg-gray-800 text-white"}`
+          }
         >
           Guidelines
-        </button>
+        </NavLink>
       </div>
       <div className="flex items-center gap-2">
         <Link

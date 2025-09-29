@@ -1,12 +1,11 @@
 import { useState } from "react";
 import Layout from "@/shared/ui/Layout";
 import { HeaderFilters } from "@/widgets/HeaderFilters";
-import { MenuList } from "@/features/menuItems/ui/MenuList";
+import { RecipesList } from "@/features/recipes/ui/RecipesList";
 
-function MenuItemsPage() {
+function RecipesPage() {
   const [inputQuery, setInputQeury] = useState("");
-  
-  const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   return (
     <Layout>
@@ -15,11 +14,11 @@ function MenuItemsPage() {
       </div>
       <div className="fadeIn">
         <div className="grid gap-4">
-          <MenuList selectedId={selectedRecipeId} onSelectId={setSelectedRecipeId} query={inputQuery} />
+          <RecipesList selectedId={selectedId} onSelectId={setSelectedId} query={inputQuery} />
         </div>
       </div>
     </Layout>
   );
 }
 
-export default MenuItemsPage;
+export default RecipesPage;
