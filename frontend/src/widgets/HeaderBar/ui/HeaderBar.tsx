@@ -12,7 +12,7 @@ type Props = {
   onChangeInput: Dispatch<SetStateAction<string>>;
 }
 
-export function HeaderFilters(props: Props) {
+export function HeaderBar(props: Props) {
   const { inputQuery, onChangeInput } = props;
   const queryClient = useQueryClient();
 

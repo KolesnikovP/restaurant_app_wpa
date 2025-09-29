@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Layout from "@/shared/ui/Layout";
-import { HeaderFilters } from "@/widgets/HeaderFilters";
+import { HeaderBar } from "@/widgets/HeaderBar";
 import { RecipesList } from "@/features/recipes/ui/RecipesList";
 
 function RecipesPage() {
@@ -10,7 +10,7 @@ function RecipesPage() {
   return (
     <Layout>
       <div className="flex items-center justify-between gap-2 mb-4">
-        <HeaderFilters inputQuery={inputQuery} onChangeInput={setInputQeury} />
+        <HeaderBar inputQuery={inputQuery} onChangeInput={setInputQeury} />
       </div>
       <div className="fadeIn">
         <div className="grid gap-4">
