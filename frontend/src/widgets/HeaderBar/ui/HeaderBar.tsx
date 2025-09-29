@@ -80,14 +80,14 @@ export function HeaderBar(props: Props) {
       {/* Floating search pill via portal to body */}
       <Portal>
         <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-4 left-1/2 -translate-x-1/2 z-50">
-          <div className="flex items-center gap-2 bg-gray-800/95 backdrop-blur text-white rounded-full px-3 py-2 shadow-lg w-[min(90vw,20rem)]">
+          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 backdrop-blur px-3 py-2 shadow-lg w-[min(90vw,22rem)] transition-colors">
             <IoSearch className="text-lg shrink-0 opacity-80" />
             <input
               type="text"
               value={inputQuery}
               onChange={(e) => onChangeInput(e.target.value)}
               placeholder="Search..."
-              className="bg-transparent focus:outline-none text-sm w-full placeholder:text-gray-400"
+              className="bg-transparent focus:outline-none text-sm w-full placeholder:text-gray-300 text-white"
             />
           </div>
         </div>
