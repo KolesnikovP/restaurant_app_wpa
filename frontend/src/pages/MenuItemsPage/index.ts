@@ -1,2 +1,3 @@
-export { default } from "../MenuItemsPage";
+import MenuItemsPage from "./ui/MenuItemsPage";
+export {MenuItemsPage}
 
