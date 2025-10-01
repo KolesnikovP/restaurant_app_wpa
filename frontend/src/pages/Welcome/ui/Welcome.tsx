@@ -5,13 +5,13 @@ import Layout from "@/shared/ui/Layout";
 import { ROUTES } from "@/shared/consts/routeNames";
 type Props = {};
 
-function Wellcome({}: Props) {
+function Welcome({}: Props) {
   return (
     <Layout>
       <div className="h-screen flex flex-col">
         <div className="max-w-96 mx-auto my-auto">
           <div className="mx-auto pt-10">
-            <img src={imageSrc} alt="Wellcome Page" />
+            <img src={imageSrc} alt="Welcome Page" />
           </div>
 
           <div className="mt-10">
@@ -44,4 +44,4 @@ function Wellcome({}: Props) {
   );
 }
 
-export default Wellcome;
+export default Welcome;

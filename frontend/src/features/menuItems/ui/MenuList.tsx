@@ -1,6 +1,7 @@
 import { Card } from "@/shared/ui/Card";
 import { useGetMenuItems } from "../api/useGetMenuItems";
 import type { TMenuItem } from "../model/types";
+import { MenuItem } from "@/entities/menuItem";
 
 type Props = {
   selectedId: number | null;
@@ -23,13 +24,25 @@ export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
     onSelectId(selectedId === r.id ? null : r.id);
   };
 
+  const handleOnClickMenuItem = () => {
+
+  }
+
   return (
-    <div className="grid gap-3">
+    <div className="grid rounded-xl border border-white/10">
       {filtered.map((i) => {
         const isOpen = i.id === selectedId;
         return (
-          <div key={i.id} className="grid gap-2">
-            <Card
+          <div key={i.id} className="grid  bg-white/5 pl-8 pr-8 hover:bg-white/10">
+          
+            <MenuItem
+              id={i.id}
+              title={i.name}
+              subtitle={i.category}
+              onClick={handleOnClickMenuItem}
+              description={i.ingredients[0] + " ..."}
+            />
+            {/* <Card
               title={i.name}
               subtitle={i.category}
               onClick={() => handleToggle(i)}
@@ -47,7 +60,7 @@ export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
                   </div>
                 )}
               </div>
-            </Card>
+            </Card> */}
           </div>
         );
       })}

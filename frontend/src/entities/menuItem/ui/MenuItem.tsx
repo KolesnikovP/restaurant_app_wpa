@@ -1,55 +1,21 @@
-import toast from "react-hot-toast";
-import { MdComment } from "react-icons/md";
-import { editMenuItem } from "@/entities/menuItem/model/api";
+type TMenuItemProps = {
+  id: number | string;
+  title: string;  
+  subtitle: string;
+  onClick: () => void;
+  description: string; 
+}
 
-type Props = {
-  id: number;
-  body: string;
-  priority: number;
-  completed: boolean;
-  onCheck: (value: boolean) => void;
-};
-
-export function MenuItem({ id, body, priority, completed, onCheck }: Props) {
-  const syncCheck = async (taskCompleted: boolean) => {
-    try {
-      await editMenuItem(id, taskCompleted);
-      onCheck(taskCompleted);
-      toast.success("Saved the changes!");
-    } catch (err) {
-      if (!navigator.onLine) {
-        onCheck(taskCompleted);
-        return toast.success(
-          "You're offline! changes will be synced when you're online again."
-        );
-      }
-      toast.error("Failed to save changes!");
-    }
-  };
-
-  const handleCheck = () => {
-    syncCheck(!completed);
-  };
+export const MenuItem = (props: TMenuItemProps) => {
+  const {title, subtitle, onClick, description} = props
 
   return (
-    <div className="bg-[#1f1f1f] p-5 w-full rounded-xl">
-      <p className="text-gray-400 text-xs">Priority: {priority}</p>
-      <div className="flex w-full mt-2 justify-between">
-        <p className="flex grow text-gray-200 text-xl">{body}</p>
-        <input
-          onChange={() => handleCheck()}
-          checked={completed}
-          type="checkbox"
-          className="m-5 h-5 inline-block my-auto cursor-pointer"
-        />
-      </div>
-
-      <div className="mt-4 w-fit ml-auto flex gap-2">
-        <div className="text-sm flex">
-          <MdComment className="my-auto mr-2" />
-          <span className="inline-block my-auto">4</span>
-        </div>
-      </div>
+    <div
+      onClick={onClick}
+      className="border-b border-white/10 pb-3 pt-3" >
+      {title && <div className="font-semibold text-white">{title}</div>}
+      {subtitle && <div className="text-xs opacity-70">{subtitle}</div>}
+      <div className="text-sm opacity-85">{description}</div>
     </div>
-  );
+  )
 }
