@@ -37,8 +37,9 @@ export function HeaderBar(props: Props) {
   };
   return (
     <>
-      {/* Fixed header centered to match Layout width; respects safe-area */}
-      <div className="fixed top-[calc(env(safe-area-inset-top)+1rem)] left-1/2 -translate-x-1/2 z-40 w-[min(90vw,36rem)]">
+      {/* Fixed full-width header; apply safe-area padding inside to avoid notch. Using top:0 avoids iOS chrome resize jitter. */}
+      <div className="fixed top-0 left-0 right-0 z-40 will-change-transform">
+        <div className="pt-[calc(env(safe-area-inset-top)+1rem)] w-[min(90vw,36rem)] mx-auto">
         <Card className="backdrop-blur shadow-lg">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2">
@@ -101,9 +102,10 @@ export function HeaderBar(props: Props) {
             <SearchInput value={inputQuery} onChange={onChangeInput} placeholder="Search..." />
           </div>
         </Card>
+        </div>
       </div>
       {/* Spacer to offset fixed header height */}
-      <div className="h-36" />
+      <div className="h-40" />
     </>
   );
 }
