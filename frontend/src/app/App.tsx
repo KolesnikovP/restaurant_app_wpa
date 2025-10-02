@@ -29,6 +29,7 @@ const Content = () => {
       <Route path={ROUTES.createMenuItem} element={<CreateMenuItem />} />
       <Route path={ROUTES.menuItems} element={<MenuItemsPage />} />
       <Route path={ROUTES.menuItemDetailed} element={<DetailedItemPage/>} />
+      <Route path={ROUTES.recipeDetailed} element={<DetailedItemPage/>} />
       <Route path={ROUTES.recipes} element={<RecipesPage />} />
       <Route path={ROUTES.guidelines} element={<GuidelinesPage />} />
     </Routes>

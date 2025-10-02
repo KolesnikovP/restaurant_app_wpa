@@ -2,6 +2,7 @@ import { Card } from "@/shared/ui/Card";
 import { useGetMenuItems } from "../api/useGetMenuItems";
 import type { TMenuItem } from "../model/types";
 import { MenuItem } from "@/entities/menuItem";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   selectedId: number | null;
@@ -11,6 +12,7 @@ type Props = {
 
 export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
   const { data: items, isPending, error } = useGetMenuItems();
+  const navigate = useNavigate();
 
   const filtered = items.filter((i) => {
     const hay = (i.name + " " + i.category + " " + i.ingredients.join(" ")).toLowerCase();
@@ -24,9 +26,9 @@ export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
     onSelectId(selectedId === r.id ? null : r.id);
   };
 
-  const handleOnClickMenuItem = () => {
-
-  }
+  const handleOnClickMenuItem = (id: number) => {
+    navigate(`/menu-item/${id}`);
+  };
 
   return (
     <div className="grid rounded-xl border border-white/10">
@@ -39,7 +41,7 @@ export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
               id={i.id}
               title={i.name}
               subtitle={i.category}
-              onClick={handleOnClickMenuItem}
+              onClick={() => handleOnClickMenuItem(i.id)}
               description={i.ingredients[0] + " ..."}
             />
             {/* <Card
@@ -70,4 +72,3 @@ export function MenuList({ selectedId, onSelectId, query = "" }: Props) {
     </div>
   );
 }
-

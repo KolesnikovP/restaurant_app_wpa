@@ -2,6 +2,7 @@ import { useGetRecipes } from "../api/useGetRecipes";
 import type { TRecipe } from "@/entities/recipe";
 import { Card } from "@/shared/ui/Card";
 import { RecipeDescription } from "./RecipeDescription";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   selectedId: number | null;
@@ -11,6 +12,7 @@ type Props = {
 
 export function RecipesList({ selectedId, onSelectId, query = "" }: Props) {
   const { data: recipes, isPending, error } = useGetRecipes();
+  const navigate = useNavigate();
 
   const filtered = recipes.filter((r) =>
     query.trim().length === 0
@@ -24,6 +26,7 @@ export function RecipesList({ selectedId, onSelectId, query = "" }: Props) {
   const handleToggle = (r: TRecipe) => {
     onSelectId(selectedId === r.id ? null : r.id);
   };
+  const goToDetails = (id: number) => navigate(`/recipe/${id}`);
 
   return (
     <div className="grid gap-3">
@@ -34,7 +37,7 @@ export function RecipesList({ selectedId, onSelectId, query = "" }: Props) {
             <Card
               title={r.recipe_name}
               subtitle={`Shelf life: ${r.shelf_life}`}
-              onClick={() => handleToggle(r)}
+              onClick={() => goToDetails(r.id)}
             >
               {isOpen ? (
                 <RecipeDescription text={r.description} />

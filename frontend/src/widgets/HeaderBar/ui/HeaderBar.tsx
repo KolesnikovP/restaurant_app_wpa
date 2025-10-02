@@ -39,8 +39,8 @@ export function HeaderBar(props: Props) {
     <>
       {/* Fixed full-width header; apply safe-area padding inside to avoid notch. Using top:0 avoids iOS chrome resize jitter. */}
       <div className="fixed top-0 left-0 right-0 z-40 will-change-transform">
-        <div className="pt-[calc(env(safe-area-inset-top)+1rem)] w-[min(90vw,36rem)] mx-auto">
-        <Card className="backdrop-blur shadow-lg">
+        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] w-[min(90vw,36rem)] mx-auto">
+          <Card className="backdrop-blur shadow-lg">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2">
               <NavLink
@@ -98,14 +98,14 @@ export function HeaderBar(props: Props) {
               </Link>
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-2">
             <SearchInput value={inputQuery} onChange={onChangeInput} placeholder="Search..." />
           </div>
-        </Card>
+          </Card>
         </div>
       </div>
       {/* Spacer to offset fixed header height */}
-      <div className="h-40" />
+      <div className="h-28" />
     </>
   );
 }
