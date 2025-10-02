@@ -18,7 +18,7 @@ export function SearchInput({ value, onChange, placeholder = 'Search...', classN
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-transparent focus:outline-none text-sm w-full placeholder:text-gray-300 text-white"
+        className="bg-transparent focus:outline-none text-base w-full placeholder:text-gray-300 text-white"
         {...inputProps}
       />
     </div>
@@ -26,4 +26,3 @@ export function SearchInput({ value, onChange, placeholder = 'Search...', classN
 }
 
 export default SearchInput;
-
