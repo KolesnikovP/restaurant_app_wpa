@@ -10,6 +10,8 @@ cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
 self.skipWaiting();
+// Take control of open pages as soon as activated
+self.clients.claim();
 
 // cache images
 const imageRoute = new Route(
