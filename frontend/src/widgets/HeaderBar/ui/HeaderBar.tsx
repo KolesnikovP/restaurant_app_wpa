@@ -37,8 +37,8 @@ export function HeaderBar(props: Props) {
   };
   return (
     <>
-      {/* Fixed header bar centered to match Layout width */}
-      <div className="fixed top-[calc(env(safe-area-inset-top)+1.5rem)] left-1/2 -translate-x-1/2 z-40 w-[min(90vw,36rem)]">
+      {/* Fixed header centered to match Layout width; respects safe-area */}
+      <div className="fixed top-[calc(env(safe-area-inset-top)+1rem)] left-1/2 -translate-x-1/2 z-40 w-[min(90vw,36rem)]">
         <Card className="backdrop-blur shadow-lg">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2">
@@ -97,16 +97,13 @@ export function HeaderBar(props: Props) {
               </Link>
             </div>
           </div>
+          <div className="mt-3">
+            <SearchInput value={inputQuery} onChange={onChangeInput} placeholder="Search..." />
+          </div>
         </Card>
       </div>
       {/* Spacer to offset fixed header height */}
-      <div className="h-16" />
-      {/* Floating search pill via portal to body */}
-      <Portal>
-        <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-4 left-1/2 -translate-x-1/2 z-50">
-          <SearchInput value={inputQuery} onChange={onChangeInput} placeholder="Search..." />
-        </div>
-      </Portal>
+      <div className="h-36" />
     </>
   );
 }

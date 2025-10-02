@@ -17,6 +17,13 @@ body {
   }
 }
 
+/* Use dynamic viewport height to reduce keyboard overlap on mobile */
+@supports (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+}
+
 /* animations */
 
 .fadeIn {
