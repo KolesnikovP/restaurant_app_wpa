@@ -5,8 +5,8 @@ import { useGetMenuItems } from "@/features/menuItems/api/useGetMenuItems";
 import { useGetRecipes } from "@/features/recipes/api/useGetRecipes";
 import { Card } from "@/shared/ui/Card";
 import { ROUTES } from "@/shared/consts/routeNames";
-import type { TMenuItem } from "@/entities/menuItem";
 import type { TRecipe } from "@/entities/recipe";
+import { TMenuItem } from "@/entities/menuItem/model/types";
 
 function DetailedItemPage() {
   const params = useParams();
