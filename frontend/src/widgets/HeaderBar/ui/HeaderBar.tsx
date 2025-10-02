@@ -1,5 +1,5 @@
 import { ROUTES } from "@/shared/consts/routeNames";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -35,27 +35,10 @@ export function HeaderBar(props: Props) {
     if (!allowOnTouch && !canHover) return;
     queryClient.prefetchQuery({ queryKey: ['recipesData'], queryFn: fetchRecipes, staleTime: 30_000 });
   };
-  const [vkOpen, setVkOpen] = useState(false);
-  useEffect(() => {
-    const vv = (window as any).visualViewport as VisualViewport | undefined;
-    if (!vv) return;
-    const onChange = () => {
-      const keyboardLikely = window.innerHeight - vv.height > 120;
-      setVkOpen(keyboardLikely);
-    };
-    onChange();
-    vv.addEventListener('resize', onChange);
-    vv.addEventListener('scroll', onChange);
-    return () => {
-      vv.removeEventListener('resize', onChange);
-      vv.removeEventListener('scroll', onChange);
-    };
-  }, []);
-
   return (
     <>
-      {/* Switch to sticky while virtual keyboard is open to keep header visible */}
-      <div className={`${vkOpen ? 'sticky' : 'fixed'} top-0 left-0 right-0 z-40`}>
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 right-0 z-40">
         <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2 max-w-xl mx-auto">
           <Card className="backdrop-blur shadow-lg w-full">
           <div className="flex items-center justify-between gap-3 w-full">
@@ -121,8 +104,8 @@ export function HeaderBar(props: Props) {
         </Card>
         </div>
       </div>
-      {/* Spacer only when header is fixed */}
-      {!vkOpen && <div className="h-24" />}
+      {/* Spacer to offset fixed header height */}
+      <div className="h-24" />
     </>
   );
 }
