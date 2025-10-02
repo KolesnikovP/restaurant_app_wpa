@@ -1,6 +1,6 @@
 import { Card } from "@/shared/ui/Card";
 import { useGetMenuItems } from "../api/useGetMenuItems";
-import type { TMenuItem } from "../model/types";
+import type { TMenuItem } from "@/entities/menuItem";
 import { MenuItem } from "@/entities/menuItem";
 import { useNavigate } from "react-router-dom";
 

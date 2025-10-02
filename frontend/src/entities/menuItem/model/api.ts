@@ -1,7 +1,7 @@
 import { api } from "@/shared/api/axios";
-import { TTask } from "./types";
+import { TMenuItem } from "./types";
 
-export const fetchMenuItems = async (): Promise<TTask[]> => {
+export const fetchMenuItems = async (): Promise<TMenuItem[]> => {
   const response = await api.get("/menu-items");
   return response.data;
 };
@@ -9,7 +9,7 @@ export const fetchMenuItems = async (): Promise<TTask[]> => {
 export const createMenuItem = async (payload: {
   body: string;
   priority: number;
-}): Promise<TTask> => {
+}): Promise<TMenuItem> => {
   const response = await api.post("/menu-item/create", payload);
   return response.data;
 };
@@ -17,8 +17,7 @@ export const createMenuItem = async (payload: {
 export const editMenuItem = async (
   id: number,
   completed: boolean
-): Promise<TTask> => {
+): Promise<TMenuItem> => {
   const response = await api.patch(`/menu-item/edit/${id}` , { completed });
   return response.data;
 };
-

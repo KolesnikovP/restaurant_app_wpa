@@ -38,7 +38,7 @@ function DetailedItemPage() {
         {item && isMenuItem && (
           <Card title={item.name} subtitle={item.category}>
             <ul className="list-disc pl-5 space-y-1 text-sm opacity-90">
-              {item.ingredients.map((ing, idx) => (
+              {item.ingredients.map((ing: string | number, idx: number) => (
                 <li key={idx}>{ing}</li>
               ))}
             </ul>

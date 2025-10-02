@@ -1,7 +1,7 @@
-export type TTask = {
+export type TMenuItem = {
   id: number;
-  body: string;
-  priority: number;
-  completed: boolean;
+  category: 'Protein Shakes' | 'Smoothies' | 'Signature / Seasonal Drinks';
+  name: string;
+  ingredients: string[];
+  notes?: string;
 };
-

@@ -1,6 +1,6 @@
 import { api } from "@/shared/api/axios";
 import { useQuery } from "@tanstack/react-query";
-import type { TMenuItem } from "../model/types";
+import type { TMenuItem } from "@/entities/menuItem";
 
 // Fetch from backend menu items and adapt into the Menu UI shape used by the app.
 export const fetchMenuItems = async (): Promise<TMenuItem[]> => {
@@ -36,4 +36,3 @@ export function useGetMenuItems() {
   });
   return { isPending, error, data: data ?? [] };
 }
-
