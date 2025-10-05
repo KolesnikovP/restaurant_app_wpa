@@ -1,21 +1,17 @@
 import { ROUTES } from "@/shared/consts/routeNames";
-import { Dispatch, SetStateAction, useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchRecipes } from "@/features/recipes/api/useGetRecipes";
 import { fetchMenuItems } from "@/features/menuItems/api/useGetMenuItems";
 import Portal from "@/shared/ui/Portal";
-import { SearchInput } from "@/shared/ui/SearchInput";
 import { Card } from "@/shared/ui/Card";
 
 type Props = {
-  inputQuery: string;
-  onChangeInput: Dispatch<SetStateAction<string>>;
 }
 
 export function HeaderBar(props: Props) {
-  const { inputQuery, onChangeInput } = props;
   const queryClient = useQueryClient();
 
   const { saveData, canHover } = useMemo(() => {
@@ -38,7 +34,7 @@ export function HeaderBar(props: Props) {
   return (
     <>
       {/* Fixed header */}
-      <div className="fixed top-0 left-0 right-0 z-40">
+      <div className="fixed top-5 left-0 right-0 z-40">
         <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2 max-w-lg mx-auto">
           <Card className="backdrop-blur shadow-lg w-full">
           <div className="flex items-center justify-between gap-3 w-full">
@@ -99,7 +95,6 @@ export function HeaderBar(props: Props) {
             </div>
           </div>
           <div className="mt-2">
-            <SearchInput value={inputQuery} onChange={onChangeInput} placeholder="Search..." />
           </div>
         </Card>
         </div>

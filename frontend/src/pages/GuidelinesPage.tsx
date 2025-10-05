@@ -7,7 +7,6 @@ function GuidelinesPage() {
   return (
     <Layout>
       <div className="flex items-center justify-between gap-2 mb-4">
-        <HeaderBar inputQuery={inputQuery} onChangeInput={setInputQeury} />
       </div>
       <div className="fadeIn">
         <div className="text-sm opacity-75">Guidelines: no data source yet.</div>

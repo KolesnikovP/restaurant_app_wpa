@@ -8,6 +8,8 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { MenuItemsPage } from "@/pages/MenuItemsPage";
 import { DetailedItemPage } from "@/pages/DetailedItemPage";
+import { HeaderBar } from "@/widgets/HeaderBar";
+import { SetStateAction } from "react";
 
 function App() {
   const queryClient = new QueryClient();
@@ -15,7 +17,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools/>
       <BrowserRouter>
-        <Content />
+        <HeaderBar />
+        <div className="pt-4">
+          <Content />
+        </div>
       </BrowserRouter>
     </QueryClientProvider>
 

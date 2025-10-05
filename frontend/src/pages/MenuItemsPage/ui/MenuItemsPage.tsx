@@ -11,7 +11,6 @@ function MenuItemsPage() {
   return (
     <Layout>
       <div className="flex items-center justify-between gap-2 mb-4">
-        <HeaderBar inputQuery={inputQuery} onChangeInput={setInputQeury} />
       </div>
       <div className="fadeIn">
         <div className="grid gap-4">
