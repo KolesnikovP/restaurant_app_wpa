@@ -39,7 +39,7 @@ export function HeaderBar(props: Props) {
     <>
       {/* Fixed header */}
       <div className="fixed top-0 left-0 right-0 z-40">
-        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2 max-w-xl mx-auto">
+        <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2 max-w-lg mx-auto">
           <Card className="backdrop-blur shadow-lg w-full">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-2">

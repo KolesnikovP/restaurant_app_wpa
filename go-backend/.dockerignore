@@ -1,0 +1,17 @@
+.git
+.gitignore
+.vscode
+.idea
+app.db
+server
+**/*.log
+**/.DS_Store
+README.md
+Makefile
+# Include seed commands for demo-friendly image build
+# (do not ignore cmd/seed or cmd/seed_menu)
+dev/
+tmp/
+dist/
+node_modules/
+vendor/

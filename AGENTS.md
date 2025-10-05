@@ -28,3 +28,4 @@ Performance & data
 Do not
 - Do not add global state unless necessary; prefer React Query and local state.
 - Do not mix unrelated refactors into focused changes.
+- Do not delete commented code unless explicitly requested; preserve existing commented blocks for historical/contextual reference.

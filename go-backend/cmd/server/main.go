@@ -15,7 +15,7 @@ import (
 func main() {
     port := appdb.MustGetEnv("PORT", "8000")
     dbPath := appdb.MustGetEnv("DB_PATH", "app.db")
-    allowed := appdb.MustGetEnv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5175")
+    allowed := appdb.MustGetEnv("ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:5175,http://192.168.1.66:5175", )
 
     if err := appdb.Connect(dbPath); err != nil {
         log.Fatalf("db connect error: %v", err)
