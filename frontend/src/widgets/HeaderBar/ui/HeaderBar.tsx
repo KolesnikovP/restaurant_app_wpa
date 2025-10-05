@@ -1,5 +1,5 @@
 import { ROUTES } from "@/shared/consts/routeNames";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,11 +8,25 @@ import { fetchMenuItems } from "@/features/menuItems/api/useGetMenuItems";
 import Portal from "@/shared/ui/Portal";
 import { Card } from "@/shared/ui/Card";
 
-type Props = {
-}
+type Props = { children?: React.ReactNode };
 
-export function HeaderBar(props: Props) {
+export function HeaderBar({ children }: Props) {
   const queryClient = useQueryClient();
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  // Publish sticky header height as a CSS variable for other sticky elements
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      const rect = el.getBoundingClientRect();
+      document.documentElement.style.setProperty('--header-height', `${rect.height}px`);
+    });
+    ro.observe(el);
+    // Initial measurement
+    const rect = el.getBoundingClientRect();
+    document.documentElement.style.setProperty('--header-height', `${rect.height}px`);
+    return () => ro.disconnect();
+  }, []);
 
   const { saveData, canHover } = useMemo(() => {
     const sd = (navigator as any)?.connection?.saveData;
@@ -33,8 +47,8 @@ export function HeaderBar(props: Props) {
   };
   return (
     <>
-      {/* Fixed header */}
-      <div className="fixed top-5 left-0 right-0 z-40">
+      {/* Sticky, safe-area-aware header */}
+      <div ref={containerRef} className="sticky top-0 left-0 right-0 z-40">
         <div className="pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-2 max-w-lg mx-auto">
           <Card className="backdrop-blur shadow-lg w-full">
           <div className="flex items-center justify-between gap-3 w-full">
@@ -94,13 +108,12 @@ export function HeaderBar(props: Props) {
               </Link>
             </div>
           </div>
-          <div className="mt-2">
-          </div>
+          {/* Sub-slot for per-page controls injected via Portal */}
+          <div id="header-sub-slot" className="mt-2" />
         </Card>
         </div>
       </div>
-      {/* Spacer to offset fixed header height */}
-      <div className="h-24" />
+      {/* No spacer needed with sticky positioning */}
     </>
   );
 }
