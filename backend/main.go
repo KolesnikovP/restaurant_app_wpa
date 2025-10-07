@@ -1,14 +1,69 @@
 package main
 
 import (
-	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"backend/database"
+	"backend/models"
+
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-  _ "github.com/lib/pq"
 )
+
+func getUsers(w http.ResponseWriter, r *http.Request) {
+	// step 1: query
+	rows, err := database.DB.Query("SELECT id, name, email, created_at FROM users")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer rows.Close()
+
+	// Step 2: Loop through each row
+	users := []models.User{}
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.CreatedAt)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		users = append(users, user)
+	}
+
+	// step 3: send json response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(users)
+}
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+
+	// Decode json from request body
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Insert into database
+	query := `INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id, created_at`
+	err = database.DB.QueryRow(query, user.Name, user.Email).Scan(&user.ID, &user.CreatedAt)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(user)
+}
 
 func main() {
 	err := godotenv.Load()
@@ -17,87 +72,19 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	database.Connect()
+	defer database.DB.Close() // close when program ends
+	database.CreateTables()
 
-	// get db credentials from .env
-	dbUser := os.Getenv("POSTGRES_USER")
-	dbPassword := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("POSTGRES_DB")
-	dbPort := os.Getenv("DB_EXTERNAL_PORT")
+	router := mux.NewRouter()
+	router.HandleFunc("/users", getUsers).Methods("GET")
+	router.HandleFunc("/users", createUser).Methods("POST")
 
-
-	connectionSring := fmt.Sprintf(
-		"host=localhost port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbPort, dbUser, dbPassword, dbName,
-		)
-
-	// create connection to db 
-	db, err := sql.Open("postgres", connectionSring)
-	if err != nil {
-		log.Fatal("Error opening db: ", err)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
 
-	defer db.Close()
-
-
-	// test the connection 
-
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Error connection to db: ", err)
-	}
-
- fmt.Println("SUCCESSFULLY connected to DB!!!! ")
-
-	// create users table
-	createUserQeury := `
-	CREATE TABLE IF NOT EXISTS users (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(100) NOT NULL,
-	email VARCHAR(100) UNIQUE NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err = db.Exec(createUserQeury)
-	if err != nil {
-		log.Fatal("Error creating table: ", err)
-	}
-// docker exec -it <your-container-name> psql -U postgres -d postgres
-
-	// and then we can see all tables \dt
-	fmt.Println(" users table created successfully!")
-
-
-	// insert a user 
-	insertQuery := `
-	INSERT INTO users (name, email)
-	VALUES ($1, $2)
-	RETURNING id;
-	`
-
-	var userID int
-	err = db.QueryRow(insertQuery, "Petr Kolesnikov", "p@gmail.com").Scan(&userID)
-	if err != nil {
-		log.Fatal("error inserting user: ", err)
-	}
-
-	fmt.Printf("User inserted successfully with id: %d\n", userID)
-
-
-	selectQuery := `SELECT id, name, email, created_at FROM users WHERE id = $1`
-
-	var id int
-	var name string
-	var email string
-	var createdAt string
-
-	err = db.QueryRow(selectQuery, userID).Scan(&id, &name, &email, &createdAt)
-	if err != nil {
-		log.Fatal("Error querring user: ", err)
-	}
-
-	fmt.Println("\n --- User Details ---")
-	fmt.Printf("ID: %d\n", id)
-	fmt.Printf("name: %s\n", name)
-	fmt.Printf("email: %s\n", email)
-	fmt.Printf("created at: %s\n", createdAt)
+	fmt.Printf("server starting on http://localhost:%s\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
