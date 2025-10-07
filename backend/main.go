@@ -65,4 +65,39 @@ func main() {
 
 	// and then we can see all tables \dt
 	fmt.Println(" users table created successfully!")
+
+
+	// insert a user 
+	insertQuery := `
+	INSERT INTO users (name, email)
+	VALUES ($1, $2)
+	RETURNING id;
+	`
+
+	var userID int
+	err = db.QueryRow(insertQuery, "Petr Kolesnikov", "p@gmail.com").Scan(&userID)
+	if err != nil {
+		log.Fatal("error inserting user: ", err)
+	}
+
+	fmt.Printf("User inserted successfully with id: %d\n", userID)
+
+
+	selectQuery := `SELECT id, name, email, created_at FROM users WHERE id = $1`
+
+	var id int
+	var name string
+	var email string
+	var createdAt string
+
+	err = db.QueryRow(selectQuery, userID).Scan(&id, &name, &email, &createdAt)
+	if err != nil {
+		log.Fatal("Error querring user: ", err)
+	}
+
+	fmt.Println("\n --- User Details ---")
+	fmt.Printf("ID: %d\n", id)
+	fmt.Printf("name: %s\n", name)
+	fmt.Printf("email: %s\n", email)
+	fmt.Printf("created at: %s\n", createdAt)
 }
