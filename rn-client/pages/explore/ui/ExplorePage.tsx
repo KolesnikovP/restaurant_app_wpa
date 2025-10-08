@@ -1,13 +1,13 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { Collapsible } from '@shared/components/ui/collapsible';
+import { ExternalLink } from '@shared/components/external-link';
+import ParallaxScrollView from '@shared/components/parallax-scroll-view';
+import { ThemedText } from '@shared/components/themed-text';
+import { ThemedView } from '@shared/components/themed-view';
+import { IconSymbol } from '@shared/components/ui/icon-symbol';
+import { Fonts } from '@shared/constants/theme';
 
 export default function ExplorePage() {
   return (
@@ -58,7 +58,7 @@ export default function ExplorePage() {
           different screen densities
         </ThemedText>
         <Image
-          source={require('@/assets/images/react-logo.png')}
+          source={require('@shared/assets/images/react-logo.png')}
           style={{ width: 100, height: 100, alignSelf: 'center' }}
         />
         <ExternalLink href="https://reactnative.dev/docs/images">
@@ -110,4 +110,3 @@ const styles = StyleSheet.create({
     gap: 8,
   },
 });
-
