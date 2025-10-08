@@ -32,19 +32,24 @@ func main() {
 	router.HandleFunc("/users", handlers.GetUsers).Methods("GET")
 	router.HandleFunc("/users", handlers.CreateUser).Methods("POST")
 
+	// Web auth routes
 	router.HandleFunc("/auth/google/login", handlers.GoogleLogin).Methods("GET")
 	router.HandleFunc("/auth/google/callback", handlers.GoogleCallback).Methods("GET")
+
+	// Mobile auth route 
+	router.HandleFunc("/auth/google/mobile", handlers.GoogleMobileAuth).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-		fmt.Printf("✓ Server starting on http://localhost:%s\n", port)
+	fmt.Printf("✓ Server starting on http://localhost:%s\n", port)
 	fmt.Println("✓ Available endpoints:")
 	fmt.Println("  - GET  http://localhost:" + port + "/users")
 	fmt.Println("  - POST http://localhost:" + port + "/users")
 	fmt.Println("  - GET  http://localhost:" + port + "/auth/google/login")
+	fmt.Println("  - POST http://localhost:" + port + "/auth/google/mobile")
 
 	log.Fatal(http.ListenAndServe(":"+port, router))
 }
