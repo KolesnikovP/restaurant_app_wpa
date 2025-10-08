@@ -52,7 +52,6 @@ func CreateTables() {
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)`
 
-
 	_, err := DB.Exec(createUserQeury)
 	if err != nil {
 		log.Fatal("Error creating table: ", err)
