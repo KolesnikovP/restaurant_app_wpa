@@ -1,44 +1,115 @@
-
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import ParallaxScrollView from '@shared/components/parallax-scroll-view';
+import React from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@shared/components/themed-text';
 import { ThemedView } from '@shared/components/themed-view';
-import { Link } from 'expo-router';
+import { Colors } from '@shared/constants/theme';
+import { useColorScheme } from '@shared/hooks/use-color-scheme';
+import { FontAwesome } from '@expo/vector-icons';
+import { TextField } from '@shared/components/ui/text-field';
+import { AppButton } from '@shared/components/ui/app-button';
 
 export function LoginPage() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@shared/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.stepContainer}>
-      </ThemedView>
+  const colorScheme = useColorScheme() ?? 'light';
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
-    </ParallaxScrollView>
+  const onLogin = () => {
+    // TODO: wire to auth feature
+    console.log('Login pressed', { email });
+  };
+
+  const onLoginWithGoogle = () => {
+    // TODO: integrate Google auth
+    console.log('Login with Google');
+  };
+
+  const isValid = email.trim().length > 0 && password.length > 0;
+  const tint = Colors[colorScheme].tint;
+  const borderColor = Colors[colorScheme].icon;
+
+  return (
+    <ThemedView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.select({ ios: 'padding', android: undefined })}
+        keyboardVerticalOffset={Platform.select({ ios: 64, android: 0 })}
+      >
+        <View style={styles.screenStack}>
+          <View style={styles.topSection}>
+            <ThemedText type="title" style={styles.title}>
+              Log in
+            </ThemedText>
+            <TextField
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Email"
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              placeholderTextColor={borderColor}
+            />
+            <TextField
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry
+              textContentType="password"
+              placeholderTextColor={borderColor}
+            />
+            <AppButton title="LOG IN" onPress={onLogin} disabled={!isValid} variant="primary" />
+          </View>
+
+          <View style={styles.bottomSection}>
+            <View style={styles.separatorRow}>
+              <View style={[styles.separatorLine, { backgroundColor: borderColor }]} />
+              <ThemedText style={styles.separatorText}>LOGIN WITH</ThemedText>
+              <View style={[styles.separatorLine, { backgroundColor: borderColor }]} />
+            </View>
+            <AppButton
+              title="Continue with Google"
+              onPress={onLoginWithGoogle}
+              variant="outline"
+              leftIcon={<FontAwesome name="google" size={18} color={tint} style={{ marginRight: 8 }} />}
+            />
+          </View>
+        </View>
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  screenStack: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 40,
+    justifyContent: 'space-between',
+  },
+  title: {
+    marginBottom: 6,
+  },
+  topSection: {
+    gap: 12,
+  },
+  bottomSection: {
+    gap: 14,
+    marginBottom: 24,
+  },
+  separatorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
+    marginVertical: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  separatorLine: {
+    height: 1,
+    flex: 1,
+    opacity: 0.4,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  separatorText: {
+    fontSize: 12,
+    opacity: 0.7,
   },
 });
