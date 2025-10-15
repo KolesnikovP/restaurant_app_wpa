@@ -34,7 +34,7 @@ export function LoginPage() {
   };
 
   const onLoginWithGoogle = async () => {
-    const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8080';
+    const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8081';
     // Sanity-check client IDs in dev
     if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && Platform.OS === 'web') {
       console.warn('Missing EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
