@@ -1,9 +1,12 @@
 import { TAuthUser } from '@/entities/authUser';
-import { BASE_URL } from '@/shared/constants/constants';
-import { AuthError, AuthRequestConfig, DiscoveryDocument, exchangeCodeAsync, makeRedirectUri, useAuthRequest } from 'expo-auth-session'
+import { AuthError } from 'expo-auth-session'
 import * as WebBrowser from 'expo-web-browser'
 import * as React from 'react'
 import { Platform } from 'react-native';
+import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
+import * as SecureStore from 'expo-secure-store';
+import { postGoogleIdToken } from '@/features/auth/api/mobileAuth';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -16,28 +19,7 @@ const AuthContext = React.createContext({
   error: null as AuthError | null,
 })
 
-const config: AuthRequestConfig = {
-  clientId: "google",
-  scopes: ["openid", "profile", "email"],
-  redirectUri: makeRedirectUri(),
-};
-
-const appleConfig: AuthRequestConfig = {
-  clientId: "apple",
-  scopes: ["name", "email"],
-  redirectUri: makeRedirectUri(),
-};
-
-const discovery: DiscoveryDocument = {
-  authorizationEndpoint: `${BASE_URL}/api/auth/authorize`,
-  // authorizationEndpoint: 'http://localhost:8080/auth/google/login',
-  tokenEndpoint: `${BASE_URL}/api/auth/token`,
-};
-
-const appleDiscovery: DiscoveryDocument = {
-  authorizationEndpoint: `${BASE_URL}/api/auth/apple/authorize`,
-  tokenEndpoint: `${BASE_URL}/api/auth/apple/token`,
-};
+// Using native Google id_token flow; no web authorize/callback on mobile.
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
@@ -45,80 +27,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<AuthError | null>(null)
 
-  const [request, response, promptAsync] = useAuthRequest(config, discovery)
-  const isWeb = Platform.OS === 'web'
-  React.useEffect(() => {
-    handleResponse()
-  }, [response])
-
-  const handleResponse = async () => {
-    if (response?.type === "success") {
-      const { code } = response.params
-
-      try {
-        setIsLoading(true)
-
-        const tokenResponse = await exchangeCodeAsync(
-          {
-            code: code,
-            extraParams: {
-              platform: Platform.OS,
-            },
-            clientId: 'google',
-            redirectUri: makeRedirectUri(),
-
-          },
-          discovery
-        )
-
-        console.log('token response', tokenResponse)
-
-        if(isWeb) {
-          const sessionResponse = await fetch(`${BASE_URL}/api/auth/session`, {
-            method: "GET",
-            credentials: "include"
-          })
-        if (sessionResponse.ok) {
-            const sessionData = await sessionResponse.json()
-            setUser(sessionData as TAuthUser)
-          }
-        } else {
-          const accessToken = tokenResponse.accessToken;
-
-          setAccessToken(accessToken)
-
-
-          // save toke to local storage
-          tokenCahe?.saveToken(TOKEN_KEY_NAME, accessToken)
-
-          console.log(accessToken)
-
-          // get user info
-          const decoded = jose.decodeJwt(accessToken)
-          setUser(decoded as AuthUser);
-        }
-
-      } catch (e) {
-        console.log()
-      } finally {
-        setIsLoading(false)
-      }
-
-      console.log(code)
-    } else if (response?.type === "error") {
-      setError(response.error as AuthError)
-    }
-  }
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClient: process.env.EXPO_PUBLIC_GOOGLE_EXPO_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    redirectUri: makeRedirectUri({ useProxy: true }),
+    responseType: 'id_token',
+    scopes: ['openid', 'email', 'profile'],
+  });
 
   const signIn = async () => {
+      console.log('>>> here signIN')
     try {
       if (!request) {
         console.log('no request')
         return;
       }
-      await promptAsync();
+      console.log('here, ', request.url)
+      const res = await promptAsync({ useProxy: true, showInRecents: true });
+      if (res.type !== 'success') return;
+      setIsLoading(true);
+      const idToken = (res as any)?.params?.id_token || (res as any)?.authentication?.idToken;
+      if (!idToken) throw new Error('No id_token from Google');
+      const data = await postGoogleIdToken(idToken);
+      await SecureStore.setItemAsync('auth_token', data.token);
+      setUser({ id: data.user.id, name: data.user.name, email: data.user.email } as TAuthUser);
     } catch (e) {
       console.log(e)
+      setError(e as AuthError);
+    } finally {
+      setIsLoading(false);
     }
   }
 

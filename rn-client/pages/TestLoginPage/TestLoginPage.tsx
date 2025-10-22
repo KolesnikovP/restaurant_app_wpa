@@ -8,7 +8,7 @@ export default function TestLoginPage() {
 
     <View style={styles.screenStack}>
       <Text>Login</Text>
-      <Button title="Sign in wiht google" onPress={signIn} />
+      <Button title="Sign in with google" onPress={signIn} />
     </View>
   )
 }

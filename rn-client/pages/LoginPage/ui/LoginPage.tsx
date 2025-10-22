@@ -4,6 +4,8 @@ import * as Google from 'expo-auth-session/providers/google';
 import { makeRedirectUri } from 'expo-auth-session';
 import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@shared/components/themed-text';
+import * as SecureStore from 'expo-secure-store';
+import { useAuth } from '@/features/auth/model/authContext';
 import { ThemedView } from '@shared/components/themed-view';
 import { Colors } from '@shared/constants/theme';
 import { useColorScheme } from '@shared/hooks/use-color-scheme';
@@ -15,10 +17,12 @@ import { AppButton } from '@shared/components/ui/app-button';
 WebBrowser.maybeCompleteAuthSession();
 
 export function LoginPage() {
+  const { signInWithGoogle } = useAuth();
   const colorScheme = useColorScheme() ?? 'light';
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  // Kept here to show disabled request if IDs are missing; actual sign-in is done via useAuth().
+  const [request] = Google.useAuthRequest({
     expoClientId: process.env.EXPO_PUBLIC_GOOGLE_EXPO_CLIENT_ID,
     iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
     androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
@@ -34,45 +38,10 @@ export function LoginPage() {
   };
 
   const onLoginWithGoogle = async () => {
-    const baseUrl = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8081';
-    // Sanity-check client IDs in dev
-    if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && Platform.OS === 'web') {
-      console.warn('Missing EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
-    }
-    if (Platform.OS === 'ios' && !process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID) {
-      console.warn('Missing EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID');
-    }
-    if (Platform.OS === 'android' && !process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID) {
-      console.warn('Missing EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID');
-    }
-
     try {
-      const res = await promptAsync({ useProxy: true, showInRecents: true });
-      if (res.type !== 'success') {
-        console.log('Google auth cancelled or failed', res.type);
-        return;
-      }
-      const idToken = (res as any)?.params?.id_token || (res as any)?.authentication?.idToken;
-      if (!idToken) {
-        Alert.alert('Login failed', 'No ID token returned.');
-        return;
-      }
-      const resp = await fetch(`${baseUrl}/auth/google/mobile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_token: idToken }),
-      });
-      if (!resp.ok) {
-        const text = await resp.text();
-        console.error('Backend error', resp.status, text);
-        Alert.alert('Login failed', `Server error ${resp.status}`);
-        return;
-      }
-      const data = await resp.json();
-      console.log('Login success:', data);
-      // TODO: persist session (e.g., SecureStore) and update auth state
+      await signInWithGoogle();
     } catch (err) {
-      console.error('err fetching data ' + err);
+      console.error('Google sign-in failed', err);
       Alert.alert('Login failed', String(err));
     }
   };
@@ -91,7 +60,7 @@ export function LoginPage() {
         <View style={styles.screenStack}>
           <View style={styles.topSection}>
             <ThemedText type="title" style={styles.title}>
-              Log in
+              Log i   n
             </ThemedText>
             <TextField
               value={email}
