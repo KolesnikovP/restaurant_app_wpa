@@ -1,2 +1,3 @@
-export { default as ExplorePage } from './ui/ExplorePage';
+import {ExplorePage } from './ui/ExplorePage';
+export default ExplorePage
 

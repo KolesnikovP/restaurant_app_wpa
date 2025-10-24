@@ -44,7 +44,7 @@ export default function LoginPage() {
           name: json.name
         })
         console.log("✅ logged in successfully!")
-        router.replace('/home')
+        router.replace('/(tabs)')
       } else {
         console.log("❌ No token received")
         Alert.alert('Error', 'No token received')
