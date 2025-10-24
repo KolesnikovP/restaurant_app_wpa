@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 export default function LoginPage() {
   const { signIn } = useAuth()
   const router = useRouter()
+  
   const [loginValue, setLoginValue] = useState<string>('')
   const [passwordValue, setPasswordValue] = useState<string>('')  // Fixed typo
   const [isLoading, setIsLoading] = useState<boolean>(false)
