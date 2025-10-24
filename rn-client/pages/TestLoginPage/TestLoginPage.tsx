@@ -1,18 +1,61 @@
 import { useAuth } from "@/app/providers/auth";
 import { ThemedText } from "@/shared/components/themed-text";
 import { AppButton } from "@/shared/components/ui/app-button";
-import React, { useEffect, useState } from "react";
-import { View, SafeAreaView, Text, StyleSheet, Button, TextInput } from "react-native";
+import { BASE_URL } from "@/shared/constants/constants";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function TestLoginPage() {
   const { signIn } = useAuth()
+  const router = useRouter()
   const [loginValue, setLoginValue] = useState<string>('')
-  const [passwodValue, setPasswordValue] = useState<string>('')
-
-  const handleSubmit = () => {
-    console.log(loginValue, passwodValue)
+  const [passwordValue, setPasswordValue] = useState<string>('')  // Fixed typo
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  
+  const handleSubmit = async () => {
+    setIsLoading(true);  
+    try {
+      const response = await fetch(BASE_URL + "/login", {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: loginValue.toLowerCase(),
+          password: passwordValue  
+        })
+      })
+      
+      if(!response.ok) {
+        Alert.alert('Error', 'Login failed')
+        return;
+      }
+      
+      const json = await response.json()
+      console.log(json, "M<<<<<<<")
+      
+      if(json.token) {
+        await signIn(json.token, {
+          id: json.id + '',  // Make sure to include id
+          email: json.email,
+          name: json.name
+        })
+        console.log("✅ logged in successfully!")
+        router.replace('/home')
+      } else {
+        console.log("❌ No token received")
+        Alert.alert('Error', 'No token received')
+      }
+    } catch (error) {
+      console.log('Error:', error)
+      Alert.alert('Error', 'Something went wrong')
+    } finally {
+      setIsLoading(false); 
+    }
   }
-
+  
   return (
     <View style={styles.screenStack}>
       <ThemedText type="title">Login</ThemedText>
@@ -20,25 +63,23 @@ export default function TestLoginPage() {
         style={styles.input}
         value={loginValue}
         onChangeText={setLoginValue}
-        placeholder="login"
+        placeholder="email"
         keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="password"
-        value={passwodValue}
+        value={passwordValue}  // Fixed typo
         onChangeText={setPasswordValue}
         secureTextEntry
       />
-
       <AppButton
         onPress={handleSubmit}
-        title="login"
+        title={isLoading ? "Loading..." : "Login"}  // Show loading state
         size="medium"
+        disabled={isLoading}  // Disable while loading
       />
-      
-      <Text>Login</Text>
-      <Button title="Sign in with google" onPress={signIn} />
     </View>
   )
 }
@@ -55,30 +96,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  title: {
-    marginBottom: 6,
-  },
-  topSection: {
-    gap: 12,
-  },
-  bottomSection: {
-    gap: 14,
-    marginBottom: 24,
-  },
-  separatorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginVertical: 10,
-  },
-  separatorLine: {
-    height: 1,
-    flex: 1,
-    opacity: 0.4,
-  },
-  separatorText: {
-    fontSize: 12,
-    opacity: 0.7,
-  },
+  }
 });

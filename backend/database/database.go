@@ -49,6 +49,7 @@ func CreateTables() {
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(100) NOT NULL,
 	email VARCHAR(100) UNIQUE NOT NULL,
+	password_hash TEXT NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 	)`
 
@@ -58,6 +59,28 @@ func CreateTables() {
 	}
 
  	fmt.Println("✓ Users table ready!")
+
+
+	/* fmt.Println("creating a fake user")
+ 	insertQuery := `
+	INSERT INTO users (name, email, password_hash)
+	VALUES ($1, $2, $3)
+	`
+
+	var userID int 
+	err = DB.QueryRow(insertQuery, 
+		"admin",
+		"admin",
+		"admin",
+		).Scan(&userID)
+
+	if err != nil {
+		log.Fatal("error creating fake user", err)
+	}
+
+	fmt.Printf("✓ Fake user created successfully with ID: %d\n", userID) */
+
+
 // docker exec -it <your-container-name> psql -U postgres -d postgres
 
 	/* // and then we can see all tables \dt

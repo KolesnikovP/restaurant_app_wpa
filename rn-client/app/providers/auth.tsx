@@ -2,75 +2,103 @@ import { TAuthUser } from '@/entities/authUser';
 import { AuthError } from 'expo-auth-session'
 import * as WebBrowser from 'expo-web-browser'
 import * as React from 'react'
-import { Platform } from 'react-native';
-import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
 import * as SecureStore from 'expo-secure-store';
-import { postGoogleIdToken } from '@/features/auth/api/mobileAuth';
+import { useRouter } from 'expo-router';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const AuthContext = React.createContext({
-  user: null,
-  signIn: () => { },
-  signOut: () => { },
-  fetchWithAuth: async (url: string, options?: RequestInit) => Promise.resolve(new Response()),
-  isLoading: false,
-  error: null as AuthError | null,
-})
+interface TAuthContext {
+  user: TAuthUser | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  signIn: (token: string, userData: TAuthUser) => Promise<void>;
+  signOut: () => Promise<void>;
+  error: AuthError | null;
+}
 
-// Using native Google id_token flow; no web authorize/callback on mobile.
+const AuthContext = React.createContext<TAuthContext | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-
   const [user, setUser] = React.useState<TAuthUser | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);  // Changed to true
   const [error, setError] = React.useState<AuthError | null>(null)
+  const router = useRouter()
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClient: process.env.EXPO_PUBLIC_GOOGLE_EXPO_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    redirectUri: makeRedirectUri({ useProxy: true }),
-    responseType: 'id_token',
-    scopes: ['openid', 'email', 'profile'],
-  });
+  // Check if user has token on app start
+  React.useEffect(() => {
+    loadStoredAuth();
+  }, []);
 
-  const signIn = async () => {
-      console.log('>>> here signIN')
+  const loadStoredAuth = async () => {
     try {
-      if (!request) {
-        console.log('no request')
-        return;
+      const token = await SecureStore.getItemAsync('authToken');
+      const email = await SecureStore.getItemAsync('userEmail');
+      const name = await SecureStore.getItemAsync('userName');
+      const id = await SecureStore.getItemAsync('userId');  // ADD THIS
+
+      if (token && email && name && id) {
+        setUser({ id, email, name });
       }
-      console.log('here, ', request.url)
-      const res = await promptAsync({ useProxy: true, showInRecents: true });
-      if (res.type !== 'success') return;
-      setIsLoading(true);
-      const idToken = (res as any)?.params?.id_token || (res as any)?.authentication?.idToken;
-      if (!idToken) throw new Error('No id_token from Google');
-      const data = await postGoogleIdToken(idToken);
-      await SecureStore.setItemAsync('auth_token', data.token);
-      setUser({ id: data.user.id, name: data.user.name, email: data.user.email } as TAuthUser);
-    } catch (e) {
-      console.log(e)
-      setError(e as AuthError);
+    } catch (error) {
+      console.log('Error loading auth:', error);
+      setError(error as AuthError);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
-  const signOut = async () => { }
+  const signIn = async (token: string, userData: TAuthUser) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Save to secure storage
+      await SecureStore.setItemAsync('authToken', token);
+      await SecureStore.setItemAsync('userEmail', userData.email);
+      await SecureStore.setItemAsync('userName', userData.name);
+      await SecureStore.setItemAsync('userId', userData.id);  // ADD THIS
 
-  const fetchWithAuth = async (url: string, options?: RequestInit) => { }
+      // Update state
+      setUser({ id: userData.id, email: userData.email, name: userData.name });
+    } catch (error) {
+      console.log('Error signing in:', error);
+      setError(error as AuthError);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Clear secure storage
+      await SecureStore.deleteItemAsync('authToken');
+      await SecureStore.deleteItemAsync('userEmail');
+      await SecureStore.deleteItemAsync('userName');
+      await SecureStore.deleteItemAsync('userId');
+
+      // Clear state
+      setUser(null);
+      setError(null);
+      
+      // Navigate to login
+      router.replace('/login');
+    } catch (error) {
+      console.log('Error signing out:', error);
+      setError(error as AuthError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const initData = {
     user,
+    isLoading,
+    isAuthenticated: !!user,
     signIn,
     signOut,
-    fetchWithAuth,
-    isLoading,
     error,
   }
 

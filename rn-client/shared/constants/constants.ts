@@ -31,7 +31,7 @@ export const APPLE_REDIRECT_URI = `${process.env.EXPO_PUBLIC_BASE_URL}/auth/appl
 export const APPLE_AUTH_URL = "https://appleid.apple.com/auth/authorize";
 
 // // Environment Constants
-export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
+export const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL || 'http://localhost:8080';
 export const APP_SCHEME = process.env.EXPO_PUBLIC_SCHEME;
 export const JWT_SECRET = process.env.JWT_SECRET!;
 

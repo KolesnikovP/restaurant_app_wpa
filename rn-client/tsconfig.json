@@ -4,7 +4,9 @@
     "strict": true,
     "paths": {
       "@/*": ["./*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./shared/*"],
+      "@/pages/*": ["./pages/*"],
+      "@/app/*": ["./app/*"]
     }
   },
   "include": [
