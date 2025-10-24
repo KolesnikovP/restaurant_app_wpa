@@ -74,7 +74,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// Return user info as JSON
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Login successful",
+		"message": "web: Login successful",
 		"user":    user,
 	})
 }

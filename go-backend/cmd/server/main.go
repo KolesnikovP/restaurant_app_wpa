@@ -25,7 +25,7 @@ func main() {
         // ignore if table already renamed or doesn't exist
     }
     appdb.AutoMigrate(&models.MenuItem{})
-		appdb.AutoMigrate(&models.Recipe{})
+    appdb.AutoMigrate(&models.Recipe{})
 
     r := gin.Default()
 
@@ -39,7 +39,7 @@ func main() {
     r.POST("/menu-item/create", handlers.CreateMenuItem)
     r.PATCH("/menu-item/edit/:id", handlers.EditMenuItem)
 
-		r.GET("/recipes", handlers.GetRecipes)
+			r.GET("/recipes", handlers.GetRecipes)
 
     log.Printf("listening on :%s", port)
     if err := r.Run(":" + port); err != nil {

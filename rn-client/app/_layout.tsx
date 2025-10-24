@@ -1,24 +1,40 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { AuthProvider, useAuth } from './providers/auth';
+import { useRouter, useSegments } from 'expo-router';
+import { useEffect } from 'react';
 
-import { useColorScheme } from '@shared/hooks/use-color-scheme';
+// Protected routes wrapper
+function RootLayoutNav() {
+  const { user, isLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
 
-export const unstable_settings = {
-  anchor: '(app)/(tabs)',
-};
+  useEffect(() => {
+    if (isLoading) return; // Wait until we check storage
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+    const inAuthGroup = segments[0] === 'login';
+
+    if (!user && !inAuthGroup) {
+      // User not logged in, redirect to login
+      router.replace('/login');
+    } else if (user && inAuthGroup) {
+      // User logged in but on login page, redirect to home
+      router.replace('/home');
+    }
+  }, [user, segments, isLoading]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="home" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }

@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "testGuideliner"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,10 +20,11 @@
         "monochromeImage": "./shared/assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.testGuideliner"
     },
     "web": {
-      "output": "static",
+      "output": "server",
       "favicon": "./shared/assets/images/favicon.png"
     },
     "plugins": [

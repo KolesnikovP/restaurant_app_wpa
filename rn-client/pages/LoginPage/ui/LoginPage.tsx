@@ -1,6 +1,11 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { makeRedirectUri } from 'expo-auth-session';
+import { Alert, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@shared/components/themed-text';
+import * as SecureStore from 'expo-secure-store';
+import { useAuth } from '@/features/auth/model/authContext';
 import { ThemedView } from '@shared/components/themed-view';
 import { Colors } from '@shared/constants/theme';
 import { useColorScheme } from '@shared/hooks/use-color-scheme';
@@ -8,19 +13,37 @@ import { FontAwesome } from '@expo/vector-icons';
 import { TextField } from '@shared/components/ui/text-field';
 import { AppButton } from '@shared/components/ui/app-button';
 
+// Complete pending auth sessions (recommended at module scope)
+WebBrowser.maybeCompleteAuthSession();
+
 export function LoginPage() {
+  const { signInWithGoogle } = useAuth();
   const colorScheme = useColorScheme() ?? 'light';
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  // Kept here to show disabled request if IDs are missing; actual sign-in is done via useAuth().
+  const [request] = Google.useAuthRequest({
+    expoClientId: process.env.EXPO_PUBLIC_GOOGLE_EXPO_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    redirectUri: makeRedirectUri({ useProxy: true }),
+    responseType: 'id_token',
+    scopes: ['openid', 'email', 'profile'],
+  });
 
   const onLogin = () => {
     // TODO: wire to auth feature
     console.log('Login pressed', { email });
   };
 
-  const onLoginWithGoogle = () => {
-    // TODO: integrate Google auth
-    console.log('Login with Google');
+  const onLoginWithGoogle = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      console.error('Google sign-in failed', err);
+      Alert.alert('Login failed', String(err));
+    }
   };
 
   const isValid = email.trim().length > 0 && password.length > 0;
@@ -37,7 +60,7 @@ export function LoginPage() {
         <View style={styles.screenStack}>
           <View style={styles.topSection}>
             <ThemedText type="title" style={styles.title}>
-              Log in
+              Log i   n
             </ThemedText>
             <TextField
               value={email}
