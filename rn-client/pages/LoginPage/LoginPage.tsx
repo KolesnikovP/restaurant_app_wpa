@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function TestLoginPage() {
+export default function LoginPage() {
   const { signIn } = useAuth()
   const router = useRouter()
   const [loginValue, setLoginValue] = useState<string>('')

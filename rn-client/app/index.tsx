@@ -1,36 +1,16 @@
-import { ActivityIndicator, Button, Text, View } from "react-native";
-import { useAuth } from "./providers/auth";
-import { LoginPage } from "@/pages/LoginPage";
-import TestLoginPage from "@/pages/TestLoginPage/TestLoginPage";
+import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { useAuth } from '@/app/providers/auth';
 
 export default function Index() {
-  const { user, isLoading, signOut } = useAuth()
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
 
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator />
-      </View>
-    )
-  }
+  useEffect(() => {
+    if (isLoading) return;
+    router.replace(user ? '/home' : '/login');
+  }, [user, isLoading]);
 
-  if (!user) {
-    return (
-      <View style={{ flex: 1 }}>
-        <TestLoginPage />
-      </View>
-    )
-  }
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>{JSON.stringify(user)}</Text>
-      <Button title='sign out' onPress={() => signOut()}/>
-    </View>
-  );
+  return null;
 }
+
