@@ -8,25 +8,11 @@ import { ThemedView } from '@shared/components/themed-view';
 import { Link } from 'expo-router';
 import { AppButton } from '@/shared/components/ui/app-button';
 import { useAuth } from '@/app/providers/auth';
-import * as SecureStore from 'expo-secure-store';
+import { DevHelpCleanSecureStoreButton } from '@/shared/devHelpers/components/DevHelpCleanSecureStoreButton';
 
 export function HomePage() {
   const { signOut, user } = useAuth()
 
-  const simulateFreshInstall = async () => {
-    await SecureStore.deleteItemAsync('authToken');
-    await SecureStore.deleteItemAsync('userEmail');
-    await SecureStore.deleteItemAsync('userName');
-    await SecureStore.deleteItemAsync('userId');
-
-    // Force reload the app
-    if (Platform.OS === 'web') {
-      window.location.reload();
-    } else {
-      // On native, you need to manually restart
-      alert('Auth cleared! Close and reopen the app to see fresh install experience.');
-    }
-  };
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -37,14 +23,10 @@ export function HomePage() {
         />
       }>
       <ThemedText>{JSON.stringify(user)}</ThemedText>
+      <DevHelpCleanSecureStoreButton/>
       <AppButton
         onPress={signOut}
         title={"LogOut"}  // Show loading state
-        size="medium"
-      />
-      <AppButton
-        onPress={simulateFreshInstall}
-        title="Simulate Fresh Install (Dev Only)"
         size="medium"
       />
     </ParallaxScrollView>

@@ -1,36 +1,21 @@
-import { ActivityIndicator, Button, Text, View } from "react-native";
-import { useAuth } from "./providers/auth";
-import { LoginPage } from "@/pages/LoginPage";
-import TestLoginPage from "@/pages/TestLoginPage/TestLoginPage";
+import { Redirect } from 'expo-router';
+import { useAuth } from './providers/auth';
+import { View, ActivityIndicator } from 'react-native';
 
 export default function Index() {
-  const { user, isLoading, signOut } = useAuth()
+  const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <View>
-        <ActivityIndicator />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
       </View>
-    )
+    );
   }
 
-  if (!user) {
-    return (
-      <View style={{ flex: 1 }}>
-        <TestLoginPage />
-      </View>
-    )
+  if (user) {
+    return <Redirect href="/(tabs)" />;
   }
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>{JSON.stringify(user)}</Text>
-      <Button title='sign out' onPress={() => signOut()}/>
-    </View>
-  );
+
+  return <Redirect href="/login" />;
 }

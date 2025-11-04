@@ -6,9 +6,10 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function TestLoginPage() {
+export default function LoginPage() {
   const { signIn } = useAuth()
   const router = useRouter()
+  
   const [loginValue, setLoginValue] = useState<string>('')
   const [passwordValue, setPasswordValue] = useState<string>('')  // Fixed typo
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -43,7 +44,7 @@ export default function TestLoginPage() {
           name: json.name
         })
         console.log("✅ logged in successfully!")
-        router.replace('/home')
+        router.replace('/(tabs)')
       } else {
         console.log("❌ No token received")
         Alert.alert('Error', 'No token received')

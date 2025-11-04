@@ -15,7 +15,7 @@ type LoginUser struct {
 }
 
 type LoginResponse struct {
-	ID int `json:"id"`
+	ID string `json:"id"`
 	Token string `json:"token"`
 	Email string `json:"email"`
 	Name  string `json:"name"`
@@ -51,7 +51,7 @@ func LoginWithEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := LoginResponse{
+	response := LoginResponse {
 		Token: token,
 		Email: userFromDB.Email,
 		Name: userFromDB.Name,

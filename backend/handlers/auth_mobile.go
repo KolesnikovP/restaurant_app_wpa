@@ -141,7 +141,7 @@ func GoogleMobileAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	now := time.Now()
 	claims := jwt.MapClaims{
-		"sub":   strconv.Itoa(user.ID),
+		"sub":   user.ID,
 		"name":  user.Name,
 		"email": user.Email,
 		"iat":   now.Unix(),
