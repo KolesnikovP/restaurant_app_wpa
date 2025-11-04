@@ -27,7 +27,7 @@ func main() {
 
 	database.Connect()
 	defer database.DB.Close() // close when program ends
-	database.CreateTables()
+	database.RunMigrations()
 
 	router := mux.NewRouter()
 	// Advertise allowed methods and help with 405 handling on preflight
