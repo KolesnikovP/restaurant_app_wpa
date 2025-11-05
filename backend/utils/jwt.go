@@ -9,7 +9,7 @@ var jwtSecret = []byte("jwtsecret")
 
 type Claims struct {
 	Email string `json:"email"`
-	ID string `json:"id"`
+	UserID string `json:"userId"`
 	jwt.RegisteredClaims
 }
 // create a jwt token for a user
@@ -21,7 +21,7 @@ func GenerateJWT(userId, email string) (string, error) {
 	// create a tokenwith user info
 	claims := &Claims {
 		Email: email,
-		ID: userId,
+		UserID: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt: jwt.NewNumericDate(time.Now()),
