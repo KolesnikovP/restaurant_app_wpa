@@ -37,6 +37,7 @@ func main() {
 	router.HandleFunc("/users", handlers.CreateUser).Methods("POST")
 
 	router.HandleFunc("/create_environment", handlers.CreateEnvironmentHandler).Methods("POST")
+	router.HandleFunc("/environment", handlers.GetEnvironmentsHandler).Methods("GET")
 	// Login with email
 	router.HandleFunc("/login", handlers.LoginWithEmailHandler).Methods("POST")
 

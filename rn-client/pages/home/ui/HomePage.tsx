@@ -10,6 +10,7 @@ import { AppButton } from '@/shared/components/ui/app-button';
 import { useAuth } from '@/app/providers/auth';
 import { DevHelpCleanSecureStoreButton } from '@/shared/devHelpers/components/DevHelpCleanSecureStoreButton';
 import { createEnvironment } from '@/features/createEnvironment/services/createEnvironment';
+import { getEnvironments } from '@/features/getEnvironments/getEnvironments';
 
 export function HomePage() {
   const { signOut, user } = useAuth()
@@ -22,9 +23,15 @@ export function HomePage() {
     if (result) {
       Alert.alert('success >??', result.name)
     }
-
   }
 
+  const handleGetEnvironments = async () => {
+    const result = await getEnvironments()
+
+    if(result) {
+      Alert.alert('success >>>>', result)
+    }
+  }
 
   return (
     <ParallaxScrollView
@@ -44,6 +51,7 @@ export function HomePage() {
       />
 
       <AppButton onPress={handleCreateEnvironment} title="Create Test Environment" />
+      <AppButton onPress={handleGetEnvironments} title="get Test Environment" />
     </ParallaxScrollView>
   );
 }
