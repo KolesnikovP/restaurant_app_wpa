@@ -88,3 +88,4 @@ func CreateEnvironmentHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated) // 201
 	json.NewEncoder(w).Encode(environment)
 }
+
