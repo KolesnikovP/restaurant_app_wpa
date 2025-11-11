@@ -1,8 +1,9 @@
+import { TEnvironment } from "@/entities/environment/environment"
 import { GET_ENVIRONMENTS_ENDPOINT } from "@/shared/constants/endpoints"
 import * as SecureStore from "expo-secure-store"
 import { Alert } from "react-native"
 
-export const getEnvironments = async () => {
+export const getEnvironments = async (): Promise<TEnvironment[] | undefined>  => {
   try {
     const token = await SecureStore.getItemAsync('authToken')
     if (!token) {

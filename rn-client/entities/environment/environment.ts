@@ -1,4 +1,7 @@
 export type TEnvironment = {
-  title: string
+  name: string
   description: string
+  created_at: string
+  id: string,
+  owner_id: string
 } 
