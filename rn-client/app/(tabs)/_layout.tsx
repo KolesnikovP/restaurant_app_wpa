@@ -4,16 +4,29 @@ import { Modal, TouchableOpacity, useColorScheme, View, StyleSheet, Text, Alert 
 import { useEffect, useState } from 'react';
 import { createEnvironment } from '@/features/createEnvironment/services/createEnvironment';
 import { useAuth } from '../providers/auth';
+import { getEnvironments } from '@/features/getEnvironments/getEnvironments';
+import { TEnvironment } from '@/entities/environment/environment';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const [selectedValue, setSelectedValue] = useState('All');
-  const options = [
-    { label: 'All', value: 'All' },
-    { label: 'Environment 1', value: 'Environment 1' },
-    { label: 'Environment 2', value: 'Environment 2' }
-  ];
+  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [environments, setEnvironments] = useState<TEnvironment[]>([])
+  
+  const handleGetEnvironments = async () => {
+    const result = await getEnvironments()
+
+    if(result) {
+      setEnvironments(result)
+      setSelectedValue(result[0].name)
+      // console.log(environments[0].description, 'console log !!!!!!!!')
+    }
+  }
+
+  useEffect(() => {
+    handleGetEnvironments()
+  }, [])
+
 
   return (
     <Tabs
@@ -36,7 +49,7 @@ export default function TabLayout() {
             <HeaderSelect
               value={selectedValue}
               onChange={setSelectedValue}
-              options={options}
+              options={environments}
             />
           )
         }}
@@ -63,7 +76,13 @@ export default function TabLayout() {
   );
 }
 
-function HeaderSelect({ value, onChange, options }) {
+type THeaderSelectProps = {
+  value: string,
+  onChange: React.Dispatch<React.SetStateAction<string>>,
+  options: TEnvironment[]
+}
+function HeaderSelect(props: THeaderSelectProps) {
+  const {value, onChange, options} = props
   const [visible, setVisible] = useState(false);
 
   return (
@@ -82,14 +101,14 @@ function HeaderSelect({ value, onChange, options }) {
           <View style={styles.dropdown}>
             {options.map(option => (
               <TouchableOpacity
-                key={option.value}
+                key={option.name}
                 style={styles.option}
                 onPress={() => {
-                  onChange(option.value);
+                  onChange(option.name);
                   setVisible(false);
                 }}
               >
-                <Text>{option.label}</Text>
+                <Text>{option.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
