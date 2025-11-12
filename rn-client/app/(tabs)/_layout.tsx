@@ -10,24 +10,6 @@ import { TEnvironment } from '@/entities/environment/environment';
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  const [selectedValue, setSelectedValue] = useState<string>('');
-  const [environments, setEnvironments] = useState<TEnvironment[]>([])
-  
-  const handleGetEnvironments = async () => {
-    const result = await getEnvironments()
-
-    if(result) {
-      setEnvironments(result)
-      setSelectedValue(result[0].name)
-      // console.log(environments[0].description, 'console log !!!!!!!!')
-    }
-  }
-
-  useEffect(() => {
-    handleGetEnvironments()
-  }, [])
-
-
   return (
     <Tabs
       screenOptions={{
@@ -45,13 +27,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
-          headerTitle: () => (
-            <HeaderSelect
-              value={selectedValue}
-              onChange={setSelectedValue}
-              options={environments}
-            />
-          )
         }}
       />
       <Tabs.Screen

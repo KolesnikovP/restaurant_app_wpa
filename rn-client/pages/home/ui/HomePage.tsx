@@ -1,62 +1,65 @@
-import { Image } from 'expo-image';
-import { Alert, Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@shared/components/hello-wave';
-import ParallaxScrollView from '@shared/components/parallax-scroll-view';
+import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@shared/components/themed-text';
 import { ThemedView } from '@shared/components/themed-view';
-import { Link } from 'expo-router';
 import { AppButton } from '@/shared/components/ui/app-button';
 import { useAuth } from '@/app/providers/auth';
-import { DevHelpCleanSecureStoreButton } from '@/shared/devHelpers/components/DevHelpCleanSecureStoreButton';
-import { createEnvironment } from '@/features/createEnvironment/services/createEnvironment';
 import { getEnvironments } from '@/features/getEnvironments/getEnvironments';
+import { useEffect, useState } from 'react';
+import { TEnvironment } from '@/entities/environment/environment';
 
 export function HomePage() {
-  const { signOut, user } = useAuth()
+  const { user } = useAuth()
 
-  const handleCreateEnvironment = async () => {
-    const fakeID = 'a3f8b2c7-4d91-4e3a-9b5f-2c8e7d6a1f4b'
-    console.log('call func >>> ', user)
-    const result = await createEnvironment('amazing title', 'amazing description')
-
-    if (result) {
-      Alert.alert('success >??', result.name)
-    }
-  }
+  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [environments, setEnvironments] = useState<TEnvironment[]>([])
 
   const handleGetEnvironments = async () => {
     const result = await getEnvironments()
 
-    if(result) {
-      Alert.alert('success >>>>', result)
+    if (result) {
+      setEnvironments(result)
+      setSelectedValue(result[0].name)
+      // console.log(environments[0].description, 'console log !!!!!!!!')
     }
   }
 
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@shared/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedText>{JSON.stringify(user)}</ThemedText>
-      <DevHelpCleanSecureStoreButton />
-      <AppButton
-        onPress={signOut}
-        title={"LogOut"}  // Show loading state
-        size="medium"
-      />
+  useEffect(() => {
+    handleGetEnvironments()
+  }, [])
 
-      <AppButton onPress={handleCreateEnvironment} title="Create Test Environment" />
-      <AppButton onPress={handleGetEnvironments} title="get Test Environment" />
-    </ParallaxScrollView>
-  );
+  if (environments.length > 0) {
+
+    return (
+      <ThemedView style={styles.container}>
+        <ThemedText>{JSON.stringify(user)}</ThemedText>
+        <View>
+          {environments.map(item => (
+            <AppButton
+              style={styles.item}
+              key={item.id}
+              title={item.name}
+              onPress={() => { }}
+            />
+          ))}
+        </View>
+      </ThemedView>
+    );
+  }
+  return (
+    <ThemedText> loading ...</ThemedText>
+  )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    gap: 16,
+  },
+  item: {
+    marginBottom: 10,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
