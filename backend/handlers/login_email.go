@@ -30,11 +30,10 @@ func LoginWithEmailHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Here we go!!! user %+v\n", loginUser)
 
 	var userFromDB models.User
-	var userID string
 
 	err := database.DB.QueryRow(
 		"SELECT id, email, created_at, name, password_hash FROM users WHERE email = $1",
-		loginUser.Email).Scan(&userID, &userFromDB.Email, &userFromDB.CreatedAt, &userFromDB.Name, &userFromDB.Password)
+		loginUser.Email).Scan(&userFromDB.ID, &userFromDB.Email, &userFromDB.CreatedAt, &userFromDB.Name, &userFromDB.Password)
 
 	if err != nil {
 		fmt.Println("db error: ", err)
@@ -42,9 +41,9 @@ func LoginWithEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("a user from db >>>  %+v\n", userFromDB)
+	fmt.Printf("A USER FROM db >>>  %+v\n", userFromDB)
 
-	token, err := utils.GenerateJWT(userID, userFromDB.Email)
+	token, err := utils.GenerateJWT(userFromDB.ID, userFromDB.Email)
 	if err != nil {
 		fmt.Println("token generation error >>>", err)
 		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
