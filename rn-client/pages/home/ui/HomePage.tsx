@@ -7,10 +7,13 @@ import { getEnvironments } from '@/features/getEnvironments/getEnvironments';
 import { useEffect, useState } from 'react';
 import { TEnvironment } from '@/entities/environment/environment';
 
+import {Picker} from '@react-native-picker/picker';
+import { DropdownPicker } from './DropdownPicker';
+
 export function HomePage() {
   const { user } = useAuth()
 
-  const [selectedValue, setSelectedValue] = useState<string>('');
+  const [selectedValue, setSelectedValue] = useState<string>();
   const [environments, setEnvironments] = useState<TEnvironment[]>([])
 
   const handleGetEnvironments = async () => {
@@ -33,6 +36,33 @@ export function HomePage() {
       <ThemedView style={styles.container}>
         <ThemedText>{JSON.stringify(user)}</ThemedText>
         <View>
+          <DropdownPicker
+            items={environments.map(item => ({
+              label: item.name,
+              value: item.name,
+              key: item.id
+            }))}
+            selectedValue={selectedValue}
+            onValueChange={(value) => {
+              setSelectedValue(value);
+              console.log("Selected: ", value)
+            }}
+            placeholder='Select an environment'
+            style={styles.dropdown}
+          />
+        {/* <Picker
+          selectedValue={selectedValue}
+          onValueChange={(itemValue) => setSelectedValue(itemValue)}
+        >
+
+          {environments.map(item => (
+            <Picker.Item
+              label={item.name}
+              key={item.id}
+              value={item.name}
+            />
+          ))}
+        </Picker>
           {environments.map(item => (
             <AppButton
               style={styles.item}
@@ -40,7 +70,7 @@ export function HomePage() {
               title={item.name}
               onPress={() => { }}
             />
-          ))}
+          ))} */}
         </View>
       </ThemedView>
     );
@@ -56,6 +86,9 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
     gap: 16,
+  },
+    dropdown: {
+    width: '100%',
   },
   item: {
     marginBottom: 10,
