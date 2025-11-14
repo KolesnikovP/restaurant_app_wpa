@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, ViewStyle, StyleProp, Dimensions } from 'react-native';
 import { Colors } from '@shared/constants/theme';
 import { useColorScheme } from '@shared/hooks/use-color-scheme';
@@ -6,7 +6,7 @@ import { useColorScheme } from '@shared/hooks/use-color-scheme';
 type Variant = 'primary' | 'outline';
 
 export type AppButtonProps = {
-  title: string;
+  title: string | ReactNode;
   onPress: () => void;
   disabled?: boolean;
   variant?: Variant;
@@ -31,7 +31,7 @@ export function AppButton({ title, onPress, disabled, size = 'large',variant = '
         styles.base,
         size === "large" && {width: windowWidth * 0.9},
         size === "medium" && {width: windowWidth * 0.6},
-        size === "small" && {width: windowWidth * 0.3},
+        size === "small" && {width: windowWidth * 0.12},
         variant === 'primary' && { backgroundColor: tint },
         variant === 'outline' && {
           backgroundColor: scheme === 'dark' ? '#121415' : '#FFFFFF',
