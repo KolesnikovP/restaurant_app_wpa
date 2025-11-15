@@ -6,6 +6,8 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/utils"
+
+	// "backend/utils"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -21,7 +23,6 @@ type CreateEnvironmentRequest struct {
 }
 
 func CreateEnvironmentHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("YOU ARE IN THE CreateEnvironmentHandler SON")
 	var req CreateEnvironmentRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid json", http.StatusBadRequest)
@@ -57,8 +58,6 @@ func CreateEnvironmentHandler(w http.ResponseWriter, r *http.Request) {
 
 	userID := claims.UserID
 
-	fmt.Println("USER ID IS >>>> %+v <<<<<", userID)
-
 	// inserting into database
 	var environment models.Environment
 	query := `
@@ -84,6 +83,18 @@ func CreateEnvironmentHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Failed to create environment", http.StatusInternalServerError)
 		return
+	}
+
+	// ADD CREATOR AS OWNER
+	memberQuery := `
+		INSERT INTO environment_members (environment_id, user_id, role, created_at)
+		VALUES ($1, $2, $3, NOW())
+	`
+
+	_, err = database.DB.Exec(memberQuery, environment.ID, userID, models.RoleOwner)
+	if err != nil {
+		fmt.Println("Failed to add owner role: ", err)
+		// Env created but couldn't add role - log but don't fail
 	}
 
 	// return created environment
@@ -126,15 +137,24 @@ func GetEnvironmentByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Step 3: Get environment and verify ownership
 	var env models.EnvironmentWithCategories
+
 	query := `
-		SELECT id, name, description, owner_id, created_at, updated_at
-		FROM environments
-		WHERE id = $1 AND owner_id = $2
+		SELECT 
+			env.id, 
+			env.name, 
+			env.description, 
+			env.owner_id, 
+			env.created_at, 
+			env.updated_at
+		FROM environments env
+		INNER JOIN environment_members member ON env.id = member.environment_id
+		WHERE env.id = $1 AND member.user_id = $2
 	`
 	err = database.DB.QueryRow(query, envID, userID).Scan(
 		&env.ID, &env.Name, &env.Description,
 		&env.OwnerID, &env.CreatedAt, &env.UpdatedAt,
 	)
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "environment not found or access denied", http.StatusNotFound)
