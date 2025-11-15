@@ -1,13 +1,14 @@
 import { StyleSheet, View, Modal, TouchableOpacity, FlatList, Pressable } from 'react-native';
 import { ThemedText } from '@shared/components/themed-text';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { AppButton } from '../app-button';
 import { IconSymbol } from '../icon-symbol';
 
 interface AppModalProps {
   placeholder?: string;
-  onModalOpen: () => void,
-  onModalClose: () => void,
+  onModalOpen?: () => void,
+  onModalClose?: () => void,
+  visible?: boolean,
   style?: any;
   children?: ReactNode;
 }
@@ -18,52 +19,60 @@ export function AppModal({
   placeholder = '+',
   children,
   style,
+  visible
 }: AppModalProps) {
-  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    console.log('visible>> ', visible)
+  }, [visible])
 
   const onModalOpenHandler = () => {
-    setModalVisible(true)
-    onModalOpen()
+    // setModalVisible(true)
+    onModalOpen && onModalOpen()
   }
 
   const onModalCloseHandler = () => {
-    setModalVisible(false)
-    onModalClose()
+    // setModalVisible(false)
+    onModalClose && onModalClose()
+  }
+
+  if(!visible) {
+    return null
   }
 
   return (
     <View style={style}>
       {/* Dropdown Trigger */}
-      <AppButton
-        size='small'
+      {/* <AppButton size='small'
         style={styles.button}
         title={placeholder}
         onPress={onModalOpenHandler}
-      />
+      /> */}
 
-      <Modal
-        visible={modalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={onModalCloseHandler}
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setModalVisible(false)}
+        <Modal
+          // visible={modalVisible}
+          visible={visible}
+          transparent
+          animationType="fade"
+          onRequestClose={onModalCloseHandler}
         >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={onModalCloseHandler}
+          >
 
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-            <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>Select Option</ThemedText>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <ThemedText style={styles.closeButton}>✕</ThemedText>
-              </TouchableOpacity>
+            <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+              <View style={styles.modalHeader}>
+                <ThemedText style={styles.modalTitle}>Select Option</ThemedText>
+                <TouchableOpacity onPress={onModalCloseHandler}>
+                  <ThemedText style={styles.closeButton}>✕</ThemedText>
+                </TouchableOpacity>
+              </View>
+              {children}
             </View>
-            {children}
-          </View>
-        </TouchableOpacity>
-      </Modal>
+          </TouchableOpacity>
+        </Modal>
     </View>
   );
 }

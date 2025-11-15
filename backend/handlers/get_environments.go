@@ -22,7 +22,7 @@ func GetEnvironmentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf("AUTH HEADER >>>> %+v", authHeader)
 	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-	fmt.Printf("token string >>>> %+v", tokenString)
+	fmt.Printf("\ntoken string >>>> %+v", tokenString)
 	if tokenString == authHeader {
 		http.Error(w, "invalid authorization format", http.StatusUnauthorized)
 		return
@@ -36,11 +36,23 @@ func GetEnvironmentsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userID := claims.UserID
-	fmt.Printf("Looking for environments with owner_id: %v\n", userID)
+	fmt.Printf("\nLooking for environments with owner_id: %v\n", userID)
 
-	query := `
+	/* query := `
 	SELECT id, name, description FROM environments 
 	WHERE owner_id = $1 
+	` */
+	query := `
+	SELECT DISTINCT
+		environment.id,
+		environment.name,
+		environment.description,
+		environment.created_at,
+		environment.updated_at
+	FROM environments environment
+	INNER JOIN environment_members member ON environment.id = member.environment_id
+	WHERE member.user_id = $1
+	ORDER BY environment.created_at DESC
 	`
 
 	rows, err := database.DB.Query(query, userID)
@@ -48,19 +60,18 @@ func GetEnvironmentsHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to get envs", http.StatusInternalServerError)
 		return
 	}
-
 	defer rows.Close()
 
 	var environments []models.Environment
 	for rows.Next() {
-		var env models.Environment
-		err := rows.Scan(&env.ID, &env.Name, &env.Description)
+		var environment models.Environment
+		err := rows.Scan(&environment.ID, &environment.Name, &environment.Description, &environment.CreatedAt, &environment.UpdatedAt)
 		if err != nil {
 			fmt.Printf("scan error %v\n", err)
 			http.Error(w, "failed to scan envs", http.StatusInternalServerError)
 			return
 		}
-		environments = append(environments, env)
+		environments = append(environments, environment)
 	}
 
 	if err = rows.Err(); err != nil {

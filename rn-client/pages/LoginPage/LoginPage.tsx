@@ -37,6 +37,8 @@ export default function LoginPage() {
       const json = await response.json()
       console.log(json, "M<<<<<<<")
       
+      console.log("LOGIN PAGE: ", json.id, "<<<<<<<")
+
       if(json.token) {
         await signIn(json.token, {
           id: json.id + '',  // Make sure to include id
