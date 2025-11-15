@@ -4,9 +4,7 @@ import { Alert } from "react-native"
 
 export const createEnvironment = async (name: string, description: string) => {
 
-
   try {
-
     const token = await SecureStore.getItemAsync('authToken')
 
     if (!token) {

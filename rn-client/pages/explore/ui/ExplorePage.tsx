@@ -22,7 +22,7 @@ export function ExplorePage() {
   const handleCreateEnvironment = async () => {
     const fakeID = 'a3f8b2c7-4d91-4e3a-9b5f-2c8e7d6a1f4b'
     console.log('call func >>> ', user)
-    const result = await createEnvironment('amazing title', 'amazing description')
+    const result = await createEnvironment('RESTAURANT', 'restaurant description')
 if (result) {
       Alert.alert('success >??', result.name)
     }
